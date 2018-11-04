@@ -17,6 +17,23 @@ var handleDomo = function handleDomo(e) {
   return false;
 };
 
+var handleRemove = function handleRemove(e) {
+  e.preventDefault();
+
+  $("#domoMessage").animate({ width: 'hide' }, 350);
+
+  if ($("#domoNameRemove").val() == '') {
+    handleError("RAWR! All fields are required");
+    return false;
+  }
+
+  sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function () {
+    loadDomosFromServer();
+  });
+
+  return false;
+};
+
 var DomoForm = function DomoForm(props) {
   return React.createElement(
     "form",
@@ -39,8 +56,35 @@ var DomoForm = function DomoForm(props) {
       "Age: "
     ),
     React.createElement("input", { id: "domoAge", type: "text", name: "age", placeholder: "Domo Age" }),
+    React.createElement(
+      "label",
+      { htmlFor: "favColor" },
+      "Favorite Color: "
+    ),
+    React.createElement("input", { id: "domoColor", type: "text", name: "favColor", placeholder: "Favorite Color" }),
     React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
     React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Make Domo" })
+  );
+};
+
+var RemoveForm = function RemoveForm(props) {
+  return React.createElement(
+    "form",
+    { id: "removeForm",
+      onSubmit: handleRemove,
+      name: "removeForm",
+      action: "/remove",
+      method: "DELETE",
+      className: "removeForm"
+    },
+    React.createElement(
+      "label",
+      { htmlFor: "remove" },
+      "Remove Domo: "
+    ),
+    React.createElement("input", { id: "domoNameRemove", type: "text", name: "name", placeholder: "Domo Name" }),
+    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+    React.createElement("input", { className: "removeDomoSubmit", type: "submit", value: "Remove Domo" })
   );
 };
 
@@ -75,6 +119,13 @@ var DomoList = function DomoList(props) {
         " Age: ",
         domo.age,
         " "
+      ),
+      React.createElement(
+        "h3",
+        { className: "domoColor" },
+        " Favorite Color: ",
+        domo.favColor,
+        " "
       )
     );
   });
@@ -94,6 +145,8 @@ var loadDomosFromServer = function loadDomosFromServer() {
 
 var setup = function setup(csrf) {
   ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector("#makeDomo"));
+
+  ReactDOM.render(React.createElement(RemoveForm, { csrf: csrf }), document.querySelector("#removeDomo"));
 
   ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector("#domos"));
 
