@@ -1,124 +1,118 @@
-const handleDomo = (e) => {
+const handleAdd = (e) => {
   e.preventDefault();
 
-  $("#domoMessage").animate({width:'hide'},350);
-
-  if($("#domoName").val() == '' || $("#domoAge").val == '') {
-    handleError("RAWR! All fields are required");
+  if($("#gameName").val() == '' || $("#gameYear").val == '') {
+    handleError("All fields are required");
     return false;
   }
 
-  sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
-    loadDomosFromServer();
+  sendAjax('POST', $("#addForm").attr("action"), $("#addForm").serialize(), function() {
+    loadGamesFromServer();
   });
 
   return false;
 };
 
-const handleRemove = (e) => {
-  e.preventDefault();
+// const handleRemove = (e) => {
+//   e.preventDefault();
 
-  $("#domoMessage").animate({width:'hide'},350);
+//   $("#domoMessage").animate({width:'hide'},350);
 
-  if($("#domoNameRemove").val() == '') {
-    handleError("RAWR! All fields are required");
-    return false;
-  }
+//   if($("#domoNameRemove").val() == '') {
+//     handleError("RAWR! All fields are required");
+//     return false;
+//   }
 
-  sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function() {
-    loadDomosFromServer();
-  });
+//   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function() {
+//     loadDomosFromServer();
+//   });
 
-  return false;
-};
+//   return false;
+// };
 
-const DomoForm = (props) => {
+const AddForm = (props) => {
   return (
-    <form id="domoForm"
-      onSubmit={handleDomo}
-      name="domoForm"
-      action="/maker"
+    <form id="addForm"
+      onSubmit={handleAdd}
+      name="addForm"
+      action="/addPage"
       method="POST"
-      className="domoForm"
+      className="addForm"
     >
       <label htmlFor="name">Name: </label>
-      <input id="domoName" type="text" name="name" placeholder="Domo Name"/>
-      <label htmlFor="age">Age: </label>
-      <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
-      <label htmlFor="favColor">Favorite Color: </label>
-      <input id="domoColor" type="text" name="favColor" placeholder="Favorite Color"/>
+      <input id="gameName" type="text" name="name" placeholder="Game Name"/>
+      <label htmlFor="year">Year: </label>
+      <input id="gameYear" type="text" name="year" placeholder="Game Year"/>
       <input type="hidden" name="_csrf" value={props.csrf} />
-      <input className="makeDomoSubmit" type="submit" value="Make Domo" />
+      <input className="addGameSubmit" type="submit" value="Add Game" />
     </form>
   );
 };
 
-const RemoveForm = (props) => {
-  return (
-    <form id="removeForm"
-      onSubmit={handleRemove}
-      name="removeForm"
-      action="/remove"
-      method="DELETE"
-      className="removeForm"
-    >
-      <label htmlFor="remove">Remove Domo: </label>
-      <input id="domoNameRemove" type="text" name="name" placeholder="Domo Name"/>
-      <input type="hidden" name="_csrf" value={props.csrf} />
-      <input className="removeDomoSubmit" type="submit" value="Remove Domo" />
-    </form>
-  )
-}
+// const RemoveForm = (props) => {
+//   return (
+//     <form id="removeForm"
+//       onSubmit={handleRemove}
+//       name="removeForm"
+//       action="/remove"
+//       method="DELETE"
+//       className="removeForm"
+//     >
+//       <label htmlFor="remove">Remove Domo: </label>
+//       <input id="domoNameRemove" type="text" name="name" placeholder="Domo Name"/>
+//       <input type="hidden" name="_csrf" value={props.csrf} />
+//       <input className="removeDomoSubmit" type="submit" value="Remove Domo" />
+//     </form>
+//   )
+// }
 
-const DomoList = function(props) {
-  if(props.domos.length === 0) {
+const GameList = function(props) {
+  if(props.games.length === 0) {
     return (
-      <div className="domoList">
-        <h3 className="emptyDomo">No Domos yet</h3>
+      <div className="gameList">
+        <h3 className="emptyGames">No Games yet</h3>
       </div>
     );
   }
 
-  const domoNodes = props.domos.map(function(domo) {
+  const gameNodes = props.games.map(function(game) {
     return (
-      <div key={domo._id} className="domo">
-        <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-        <h3 className="domoName"> Name: {domo.name} </h3>
-        <h3 className="domoAge"> Age: {domo.age} </h3>
-        <h3 className="domoColor"> Favorite Color: {domo.favColor} </h3>
+      <div key={game._id} className="game">
+        <h3 className="gameName"> Name: {game.name} </h3>
+        <h3 className="gameYear"> Year: {game.year} </h3>
       </div>
     );
   });
 
   return (
-    <div className="domoList">
-      {domoNodes}
+    <div className="gameList">
+      {gameNodes}
     </div>
   );
 };
 
-const loadDomosFromServer = () => {
-  sendAjax('GET', '/getDomos', null, (data) => {
+const loadGamesFromServer = () => {
+  sendAjax('GET', '/getGames', null, (data) => {
     ReactDOM.render(
-      <DomoList domos={data.domos} />, document.querySelector("#domos")
+      <GameList games={data.games} />, document.querySelector("#games")
     )
   })
 };
 
 const setup = function(csrf) {
   ReactDOM.render(
-    <DomoForm csrf={csrf} />, document.querySelector("#makeDomo")
+    <AddForm csrf={csrf} />, document.querySelector("#addGame")
   );
   
-  ReactDOM.render(
-    <RemoveForm csrf={csrf} />, document.querySelector("#removeDomo")
-  )
+  // ReactDOM.render(
+  //   <RemoveForm csrf={csrf} />, document.querySelector("#removeDomo")
+  // )
 
   ReactDOM.render(
-    <DomoList domos={[]} />, document.querySelector("#domos")
+    <GameList games={[]} />, document.querySelector("#games")
   );
 
-  loadDomosFromServer();
+  loadGamesFromServer();
 };
 
 const getToken = () => {

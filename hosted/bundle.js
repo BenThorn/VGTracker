@@ -1,130 +1,110 @@
 "use strict";
 
-var handleDomo = function handleDomo(e) {
+var handleAdd = function handleAdd(e) {
   e.preventDefault();
 
-  $("#domoMessage").animate({ width: 'hide' }, 350);
-
-  if ($("#domoName").val() == '' || $("#domoAge").val == '') {
-    handleError("RAWR! All fields are required");
+  if ($("#gameName").val() == '' || $("#gameYear").val == '') {
+    handleError("All fields are required");
     return false;
   }
 
-  sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
-    loadDomosFromServer();
+  sendAjax('POST', $("#addForm").attr("action"), $("#addForm").serialize(), function () {
+    loadGamesFromServer();
   });
 
   return false;
 };
 
-var handleRemove = function handleRemove(e) {
-  e.preventDefault();
+// const handleRemove = (e) => {
+//   e.preventDefault();
 
-  $("#domoMessage").animate({ width: 'hide' }, 350);
+//   $("#domoMessage").animate({width:'hide'},350);
 
-  if ($("#domoNameRemove").val() == '') {
-    handleError("RAWR! All fields are required");
-    return false;
-  }
+//   if($("#domoNameRemove").val() == '') {
+//     handleError("RAWR! All fields are required");
+//     return false;
+//   }
 
-  sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function () {
-    loadDomosFromServer();
-  });
+//   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function() {
+//     loadDomosFromServer();
+//   });
 
-  return false;
-};
+//   return false;
+// };
 
-var DomoForm = function DomoForm(props) {
+var AddForm = function AddForm(props) {
   return React.createElement(
     "form",
-    { id: "domoForm",
-      onSubmit: handleDomo,
-      name: "domoForm",
-      action: "/maker",
+    { id: "addForm",
+      onSubmit: handleAdd,
+      name: "addForm",
+      action: "/addPage",
       method: "POST",
-      className: "domoForm"
+      className: "addForm"
     },
     React.createElement(
       "label",
       { htmlFor: "name" },
       "Name: "
     ),
-    React.createElement("input", { id: "domoName", type: "text", name: "name", placeholder: "Domo Name" }),
+    React.createElement("input", { id: "gameName", type: "text", name: "name", placeholder: "Game Name" }),
     React.createElement(
       "label",
-      { htmlFor: "age" },
-      "Age: "
+      { htmlFor: "year" },
+      "Year: "
     ),
-    React.createElement("input", { id: "domoAge", type: "text", name: "age", placeholder: "Domo Age" }),
-    React.createElement(
-      "label",
-      { htmlFor: "favColor" },
-      "Favorite Color: "
-    ),
-    React.createElement("input", { id: "domoColor", type: "text", name: "favColor", placeholder: "Favorite Color" }),
+    React.createElement("input", { id: "gameYear", type: "text", name: "year", placeholder: "Game Year" }),
     React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-    React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Make Domo" })
+    React.createElement("input", { className: "addGameSubmit", type: "submit", value: "Add Game" })
   );
 };
 
-var RemoveForm = function RemoveForm(props) {
-  return React.createElement(
-    "form",
-    { id: "removeForm",
-      onSubmit: handleRemove,
-      name: "removeForm",
-      action: "/remove",
-      method: "DELETE",
-      className: "removeForm"
-    },
-    React.createElement(
-      "label",
-      { htmlFor: "remove" },
-      "Remove Domo: "
-    ),
-    React.createElement("input", { id: "domoNameRemove", type: "text", name: "name", placeholder: "Domo Name" }),
-    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-    React.createElement("input", { className: "removeDomoSubmit", type: "submit", value: "Remove Domo" })
-  );
-};
+// const RemoveForm = (props) => {
+//   return (
+//     <form id="removeForm"
+//       onSubmit={handleRemove}
+//       name="removeForm"
+//       action="/remove"
+//       method="DELETE"
+//       className="removeForm"
+//     >
+//       <label htmlFor="remove">Remove Domo: </label>
+//       <input id="domoNameRemove" type="text" name="name" placeholder="Domo Name"/>
+//       <input type="hidden" name="_csrf" value={props.csrf} />
+//       <input className="removeDomoSubmit" type="submit" value="Remove Domo" />
+//     </form>
+//   )
+// }
 
-var DomoList = function DomoList(props) {
-  if (props.domos.length === 0) {
+var GameList = function GameList(props) {
+  if (props.games.length === 0) {
     return React.createElement(
       "div",
-      { className: "domoList" },
+      { className: "gameList" },
       React.createElement(
         "h3",
-        { className: "emptyDomo" },
-        "No Domos yet"
+        { className: "emptyGames" },
+        "No Games yet"
       )
     );
   }
 
-  var domoNodes = props.domos.map(function (domo) {
+  var gameNodes = props.games.map(function (game) {
     return React.createElement(
       "div",
-      { key: domo._id, className: "domo" },
-      React.createElement("img", { src: "/assets/img/domoface.jpeg", alt: "domo face", className: "domoFace" }),
+      { key: game._id, className: "game" },
       React.createElement(
         "h3",
-        { className: "domoName" },
+        { className: "gameName" },
         " Name: ",
-        domo.name,
+        game.name,
         " "
       ),
       React.createElement(
         "h3",
-        { className: "domoAge" },
-        " Age: ",
-        domo.age,
-        " "
-      ),
-      React.createElement(
-        "h3",
-        { className: "domoColor" },
-        " Favorite Color: ",
-        domo.favColor,
+        { className: "gameYear" },
+        " Year: ",
+        game.year,
         " "
       )
     );
@@ -132,25 +112,27 @@ var DomoList = function DomoList(props) {
 
   return React.createElement(
     "div",
-    { className: "domoList" },
-    domoNodes
+    { className: "gameList" },
+    gameNodes
   );
 };
 
-var loadDomosFromServer = function loadDomosFromServer() {
-  sendAjax('GET', '/getDomos', null, function (data) {
-    ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector("#domos"));
+var loadGamesFromServer = function loadGamesFromServer() {
+  sendAjax('GET', '/getGames', null, function (data) {
+    ReactDOM.render(React.createElement(GameList, { games: data.games }), document.querySelector("#games"));
   });
 };
 
 var setup = function setup(csrf) {
-  ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector("#makeDomo"));
+  ReactDOM.render(React.createElement(AddForm, { csrf: csrf }), document.querySelector("#addGame"));
 
-  ReactDOM.render(React.createElement(RemoveForm, { csrf: csrf }), document.querySelector("#removeDomo"));
+  // ReactDOM.render(
+  //   <RemoveForm csrf={csrf} />, document.querySelector("#removeDomo")
+  // )
 
-  ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector("#domos"));
+  ReactDOM.render(React.createElement(GameList, { games: [] }), document.querySelector("#games"));
 
-  loadDomosFromServer();
+  loadGamesFromServer();
 };
 
 var getToken = function getToken() {
@@ -165,12 +147,10 @@ $(document).ready(function () {
 "use strict";
 
 var handleError = function handleError(message) {
-  $("#errorMessage").text(message);
-  $("#domoMessage").animate({ width: 'toggle' }, 350);
+  alert(message);
 };
 
 var redirect = function redirect(response) {
-  $("#domoMessage").animate({ width: 'hide' }, 350);
   window.location = response.redirect;
 };
 
