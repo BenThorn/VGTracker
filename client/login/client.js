@@ -17,12 +17,12 @@ const handleSignup = (e) => {
   e.preventDefault();
 
   if($("#user").val() =='' || $("#pass").val() == '' || $("#pass2").val() == '') {
-    handleError("RAWR! All fields are required");
+    handleError("All fields are required");
     return false;
   }
 
   if($("#pass").val() !== $("#pass2").val()) {
-    handleError("RAWR! Passwords do not match");
+    handleError("Passwords do not match");
     return false;
   }
 
@@ -33,40 +33,45 @@ const handleSignup = (e) => {
 
 const LoginWindow = (props) => {
   return (
-  <form id="loginForm" name="loginForm"
-    onSubmit={handleLogin}
-    action="/login"
-    method="POST"
-    className="mainForm"
-  >
-    <label htmlFor="username">Username: </label>
-    <input id="user" type="text" name="username" placeholder="username"/>
-    <label htmlFor="pass">Password: </label>
-    <input id="pass" type="password" name="pass" placeholder="password"/>
-    <input type="hidden" name="_csrf" value={props.csrf}/>
-    <input className="formSubmit" type="submit" value="Sign in" />
-  </form>
+  <div className = 'LoginWindow'>
+    <div id="welcome">Welcome to VGTimer! Please login, or sign up if you don't have an account.</div>
+    <form id="loginForm" name="loginForm"
+      onSubmit={handleLogin}
+      action="/login"
+      method="POST"
+      className="mainForm"
+    >
+      <label htmlFor="username">Username: </label>
+      <input id="user" type="text" name="username" placeholder="username"/>
+      <label htmlFor="pass">Password: </label>
+      <input id="pass" type="password" name="pass" placeholder="password"/>
+      <input type="hidden" name="_csrf" value={props.csrf}/>
+      <input className="formSubmit" type="submit" value="Sign in" />
+    </form>
+  </div>
   );
 };
 
 const SignupWindow = (props) => {
   return (
-  <form id="signupForm" 
-    name="signupForm"
-    onSubmit={handleSignup}
-    action="/signup"
-    method="POST"
-    className="mainForm"
-  >
-    <label htmlFor="username">Username: </label>
-    <input id="user" type="text" name="username" placeholder="username"/>
-    <label htmlFor="pass">Password: </label>
-    <input id="pass" type="password" name="pass" placeholder="password"/>
-    <label htmlFor="pass2">Password: </label>
-    <input id="pass2" type="password" name="pass2" placeholder="retype password"/>
-    <input type="hidden" name="_csrf" value={props.csrf}/>
-    <input className="formSubmit" type="submit" value="Sign up" />
-  </form>
+  <div className = 'SignupWindow'>
+    <form id="signupForm" 
+      name="signupForm"
+      onSubmit={handleSignup}
+      action="/signup"
+      method="POST"
+      className="mainForm"
+    >
+      <label htmlFor="username">Username: </label>
+      <input id="user" type="text" name="username" placeholder="username"/>
+      <label htmlFor="pass">Password: </label>
+      <input id="pass" type="password" name="pass" placeholder="password"/>
+      <label htmlFor="pass2">Password: </label>
+      <input id="pass2" type="password" name="pass2" placeholder="retype password"/>
+      <input type="hidden" name="_csrf" value={props.csrf}/>
+      <input className="formSubmit" type="submit" value="Sign up" />
+    </form>
+  </div>
   );
 };
 

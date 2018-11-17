@@ -5,20 +5,39 @@ const _ = require('underscore');
 let GameModel = {};
 
 const convertId = mongoose.Types.ObjectId;
-const setName = (name) => _.escape(name).trim();
+const trimStr = (str) => _.escape(str).trim();
 
 const GameSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true,
-    set: setName,
+    set: trimStr,
   },
 
   year: {
     type: Number,
     min: 0,
+    required: false,
+  },
+
+  gameId: {
+    type: Number,
     required: true,
+  },
+
+  platform: {
+    type: String,
+    required: true,
+    trim: true,
+    set: trimStr,
+  },
+
+  category: {
+    type: String,
+    required: true,
+    trim: true,
+    set: trimStr,
   },
 
   owner: {
@@ -43,7 +62,16 @@ GameSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return GameModel.find(search).select('name year').exec(callback);
+  return GameModel.find(search).select('name year gameId platform category').exec(callback);
+};
+
+GameSchema.statics.deleteByName = (ownerId, gameId, callback) => {
+  const gameToRemove = {
+    owner: ownerId,
+    gameId,
+  };
+
+  return GameModel.deleteOne(gameToRemove).exec(callback);
 };
 
 GameModel = mongoose.model('Game', GameSchema);

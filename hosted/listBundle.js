@@ -1,135 +1,102 @@
 "use strict";
 
-var handleLogin = function handleLogin(e) {
-  e.preventDefault();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  if ($("#user").val() == '' || $("#pass").val() == '') {
-    handleError("RAWR! Username or password is empty");
-    return false;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var App = function (_React$Component) {
+  _inherits(App, _React$Component);
+
+  function App(props) {
+    _classCallCheck(this, App);
+
+    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
   }
 
-  console.log($("input[name=_csrf]").val());
+  _createClass(App, [{
+    key: "render",
+    value: function render() {
+      return React.createElement(
+        "div",
+        { className: "App" },
+        React.createElement(
+          "h3",
+          null,
+          "List"
+        ),
+        React.createElement("div", { id: "gameList" })
+      );
+    }
+  }]);
 
-  sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
+  return App;
+}(React.Component);
 
-  return false;
-};
-
-var handleSignup = function handleSignup(e) {
-  e.preventDefault();
-
-  if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
-    handleError("All fields are required");
-    return false;
-  }
-
-  if ($("#pass").val() !== $("#pass2").val()) {
-    handleError("Passwords do not match");
-    return false;
-  }
-
-  sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
-
-  return false;
-};
-
-var LoginWindow = function LoginWindow(props) {
-  return React.createElement(
-    "div",
-    { className: "LoginWindow" },
-    React.createElement(
-      "div",
-      { id: "welcome" },
-      "Welcome to VGTimer! Please login, or sign up if you don't have an account."
-    ),
-    React.createElement(
-      "form",
-      { id: "loginForm", name: "loginForm",
-        onSubmit: handleLogin,
-        action: "/login",
-        method: "POST",
-        className: "mainForm"
-      },
-      React.createElement(
-        "label",
-        { htmlFor: "username" },
-        "Username: "
-      ),
-      React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username" }),
-      React.createElement(
-        "label",
-        { htmlFor: "pass" },
-        "Password: "
-      ),
-      React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password" }),
-      React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-      React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign in" })
-    )
-  );
-};
-
-var SignupWindow = function SignupWindow(props) {
-  return React.createElement(
-    "div",
-    { className: "SignupWindow" },
-    React.createElement(
-      "form",
-      { id: "signupForm",
-        name: "signupForm",
-        onSubmit: handleSignup,
-        action: "/signup",
-        method: "POST",
-        className: "mainForm"
-      },
-      React.createElement(
-        "label",
-        { htmlFor: "username" },
-        "Username: "
-      ),
-      React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username" }),
-      React.createElement(
-        "label",
-        { htmlFor: "pass" },
-        "Password: "
-      ),
-      React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password" }),
-      React.createElement(
-        "label",
-        { htmlFor: "pass2" },
-        "Password: "
-      ),
-      React.createElement("input", { id: "pass2", type: "password", name: "pass2", placeholder: "retype password" }),
-      React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-      React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign up" })
-    )
-  );
-};
-
-var createLoginWindow = function createLoginWindow(csrf) {
-  ReactDOM.render(React.createElement(LoginWindow, { csrf: csrf }), document.querySelector("#content"));
-};
-
-var createSignupWindow = function createSignupWindow(csrf) {
-  ReactDOM.render(React.createElement(SignupWindow, { csrf: csrf }), document.querySelector("#content"));
-};
+;
 
 var setup = function setup(csrf) {
-  var loginButton = document.querySelector("#loginButton");
-  var signupButton = document.querySelector("#signupButton");
+  ReactDOM.render(React.createElement(App, { csrf: csrf }), document.querySelector("#content"));
 
-  signupButton.addEventListener("click", function (e) {
-    e.preventDefault();
-    createSignupWindow(csrf);
-    return false;
+  loadGamesFromServer();
+};
+
+var loadGamesFromServer = function loadGamesFromServer() {
+  sendAjax('GET', '/getGames', null, function (data) {
+    ReactDOM.render(React.createElement(GameList, { games: data.games }), document.querySelector("#gameList"));
+  });
+};
+
+var GameList = function GameList(props) {
+  console.log(props.games);
+  if (props.games.length === 0) {
+    return React.createElement(
+      "div",
+      { className: "gameList" },
+      React.createElement(
+        "h3",
+        { className: "emptyGames" },
+        "No Games yet"
+      )
+    );
+  }
+
+  var gameNodes = props.games.map(function (game) {
+    var year = void 0;
+    // Check if the date wasn't available from the API
+    if (game.year === 0) {
+      year = 'N/A';
+    } else {
+      year = game.year;
+    }
+    return React.createElement(
+      "div",
+      { key: game._id, className: "game" },
+      React.createElement(
+        "h3",
+        { className: "gameName" },
+        " Name: ",
+        game.name,
+        " "
+      ),
+      React.createElement(
+        "h3",
+        { className: "gameYear" },
+        " Year: ",
+        year,
+        " "
+      )
+    );
   });
 
-  loginButton.addEventListener("click", function (e) {
-    e.preventDefault();
-    createLoginWindow(csrf);
-    return false;
-  });
-
-  createLoginWindow(csrf); // default
+  return React.createElement(
+    "div",
+    { className: "gameList" },
+    gameNodes
+  );
 };
 
 var getToken = function getToken() {

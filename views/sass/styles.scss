@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  overflow: scroll;
+}
+
+nav {
+  background-color: red;
+  ul {
+    text-align: center;
+    list-style-type: none;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  li {
+    padding: 10px 35px 10px 35px;
+    min-width: 20px;
+    margin-left: 20px;
+    display: inline-block;
+    cursor: pointer;
+  }
+}
+
+
+.LoginWindow, .SignupWindow {
+  max-width: 750px;
+  margin: 0 auto;
+  margin-top: 100px;
+  #loginForm, #signupForm {
+    background-color: gray;
+    margin: 0;
+    text-align: center;
+    width: 350px;
+    display: inline-block;
+  
+    label {
+      display: inline-block;
+      margin-right: 10px;
+      text-align: right;
+      width: 120px;
+    }
+  
+    input {
+      text-align: center;
+      width: 100px;
+    }
+  }
+
+  #welcome {
+    font-size: 24px;
+    display: inline-block;
+    width: 300px;
+    margin-right: 50px;
+  }
+}
+
+.mainForm {
+  height: 300px;
+  width: 350px;
+  margin: 0 auto;
+  padding-top: 350px;
+  font-size: 1.2em;
+    h3 {
+      text-align: center;
+    }
+    label {
+      display: inline-block;
+      width: 100px;
+      margin-right: 10px;
+      text-align: right;
+      font-size: 1.2em;
+    }
+  }
+
+  #addForm, #removeForm {
+    display: none;
+  }

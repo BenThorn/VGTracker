@@ -1,135 +1,70 @@
 "use strict";
 
-var handleLogin = function handleLogin(e) {
-  e.preventDefault();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  if ($("#user").val() == '' || $("#pass").val() == '') {
-    handleError("RAWR! Username or password is empty");
-    return false;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var App = function (_React$Component) {
+  _inherits(App, _React$Component);
+
+  function App(props) {
+    _classCallCheck(this, App);
+
+    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
   }
 
-  console.log($("input[name=_csrf]").val());
+  _createClass(App, [{
+    key: "render",
+    value: function render() {
+      return React.createElement(
+        "div",
+        { className: "App" },
+        React.createElement(
+          "h3",
+          null,
+          "Welcome "
+        ),
+        React.createElement(HomeButtons, null)
+      );
+    }
+  }]);
 
-  sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
+  return App;
+}(React.Component);
 
-  return false;
-};
+;
 
-var handleSignup = function handleSignup(e) {
-  e.preventDefault();
-
-  if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
-    handleError("All fields are required");
-    return false;
-  }
-
-  if ($("#pass").val() !== $("#pass2").val()) {
-    handleError("Passwords do not match");
-    return false;
-  }
-
-  sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
-
-  return false;
-};
-
-var LoginWindow = function LoginWindow(props) {
+var HomeButtons = function HomeButtons(props) {
   return React.createElement(
     "div",
-    { className: "LoginWindow" },
+    { className: "homeButtons" },
     React.createElement(
-      "div",
-      { id: "welcome" },
-      "Welcome to VGTimer! Please login, or sign up if you don't have an account."
+      "button",
+      null,
+      React.createElement(
+        "a",
+        { href: "/addPage" },
+        "Search and Add Games"
+      )
     ),
     React.createElement(
-      "form",
-      { id: "loginForm", name: "loginForm",
-        onSubmit: handleLogin,
-        action: "/login",
-        method: "POST",
-        className: "mainForm"
-      },
+      "button",
+      null,
       React.createElement(
-        "label",
-        { htmlFor: "username" },
-        "Username: "
-      ),
-      React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username" }),
-      React.createElement(
-        "label",
-        { htmlFor: "pass" },
-        "Password: "
-      ),
-      React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password" }),
-      React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-      React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign in" })
+        "a",
+        { href: "/list" },
+        "View List"
+      )
     )
   );
-};
-
-var SignupWindow = function SignupWindow(props) {
-  return React.createElement(
-    "div",
-    { className: "SignupWindow" },
-    React.createElement(
-      "form",
-      { id: "signupForm",
-        name: "signupForm",
-        onSubmit: handleSignup,
-        action: "/signup",
-        method: "POST",
-        className: "mainForm"
-      },
-      React.createElement(
-        "label",
-        { htmlFor: "username" },
-        "Username: "
-      ),
-      React.createElement("input", { id: "user", type: "text", name: "username", placeholder: "username" }),
-      React.createElement(
-        "label",
-        { htmlFor: "pass" },
-        "Password: "
-      ),
-      React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password" }),
-      React.createElement(
-        "label",
-        { htmlFor: "pass2" },
-        "Password: "
-      ),
-      React.createElement("input", { id: "pass2", type: "password", name: "pass2", placeholder: "retype password" }),
-      React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-      React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign up" })
-    )
-  );
-};
-
-var createLoginWindow = function createLoginWindow(csrf) {
-  ReactDOM.render(React.createElement(LoginWindow, { csrf: csrf }), document.querySelector("#content"));
-};
-
-var createSignupWindow = function createSignupWindow(csrf) {
-  ReactDOM.render(React.createElement(SignupWindow, { csrf: csrf }), document.querySelector("#content"));
 };
 
 var setup = function setup(csrf) {
-  var loginButton = document.querySelector("#loginButton");
-  var signupButton = document.querySelector("#signupButton");
-
-  signupButton.addEventListener("click", function (e) {
-    e.preventDefault();
-    createSignupWindow(csrf);
-    return false;
-  });
-
-  loginButton.addEventListener("click", function (e) {
-    e.preventDefault();
-    createLoginWindow(csrf);
-    return false;
-  });
-
-  createLoginWindow(csrf); // default
+  ReactDOM.render(React.createElement(App, { csrf: csrf }), document.querySelector("#content"));
 };
 
 var getToken = function getToken() {

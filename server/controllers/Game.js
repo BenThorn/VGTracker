@@ -1,4 +1,6 @@
 const models = require('../models');
+const giantbomb = require('giantbomb');
+const gb = giantbomb('a8c50336272d5cf222a55a2e86f8486011b9e0ee');
 
 const Game = models.Game;
 
@@ -13,7 +15,12 @@ const addPage = (req, res) => {
   });
 };
 
+const defaultPage = (req, res) => res.render('default', { csrfToken: req.csrfToken() });
+
+const listPage = (req, res) => res.render('list', { csrfToken: req.csrfToken() });
+
 const addGame = (req, res) => {
+  console.log(req.body);
   if (!req.body.name || !req.body.year) {
     return res.status(400).json({ error: 'Name, year required' });
   }
@@ -21,6 +28,9 @@ const addGame = (req, res) => {
   const gameData = {
     name: req.body.name,
     year: req.body.year,
+    gameId: req.body.gameId,
+    platform: req.body.platform,
+    category: req.body.platform,
     owner: req.session.account._id,
   };
 
@@ -56,20 +66,42 @@ const getGames = (request, response) => {
   });
 };
 
-// const removeDomo = (request, response) => {
-//   const req = request;
-//   const res = response;
+const removeGame = (request, response) => {
+  const req = request;
+  const res = response;
 
-//   return Domo.DomoModel.deleteByName(req.session.account._id, req.body.name, (err) => {
-//     if (err) {
-//       console.log(err);
-//       return res.status(400).json({ error: 'An error occurred' });
-//     }
-//     return res.json({ message: 'Removed domo' });
-//   });
-// };
+  return Game.GameModel.deleteByName(req.session.account._id, req.body.gameId, (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+    return res.json({ message: 'Removed game' });
+  });
+};
+
+// Makes call to external API
+const searchGames = (request, response) => {
+  console.log('search');
+  const req = request;
+  const res = response;
+  const parsedUrl = req._parsedUrl.query;
+  const searchTerm = (parsedUrl);
+  console.log(searchTerm);
+  const config = {
+    fields: ['name', 'original_release_date', 'expected_release_year', 'id', 'platforms', 'image'],
+    sortBy: 'original_release_date',
+    sortDir: 'desc',
+    perPage: 20,
+  };
+  gb.games.search(searchTerm, config, (err, result, json) => {
+    res.send(json.results);
+  });
+};
 
 module.exports.addPage = addPage;
 module.exports.getGames = getGames;
-// module.exports.removeDomo = removeDomo;
+module.exports.removeGame = removeGame;
+module.exports.searchGames = searchGames;
+module.exports.defaultPage = defaultPage;
+module.exports.listPage = listPage;
 module.exports.add = addGame;

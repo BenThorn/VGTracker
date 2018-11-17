@@ -6,9 +6,10 @@ const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
-const signupPage = (req, res) => {
-  res.render('signup', { csrfToken: req.csrfToken() });
-};
+// const signupPage = (req, res) => {
+//   debugger;
+//   res.render('signup', { csrfToken: req.csrfToken() });
+// };
 
 const logout = (req, res) => {
   req.session.destroy();
@@ -23,7 +24,7 @@ const login = (request, response) => {
   const password = `${req.body.pass}`;
 
   if (!username || !password) {
-    return res.status(400).json({ error: 'RAWR! All fields are required!' });
+    return res.status(400).json({ error: 'All fields are required!' });
   }
 
   return Account.AccountModel.authenticate(username, password, (err, account) => {
@@ -33,7 +34,7 @@ const login = (request, response) => {
 
     req.session.account = Account.AccountModel.toAPI(account);
 
-    return res.json({ redirect: '/addPage' });
+    return res.json({ redirect: '/default' });
   });
 };
 
@@ -46,11 +47,11 @@ const signup = (request, response) => {
   req.body.pass2 = `${req.body.pass2}`;
 
   if (!req.body.username || !req.body.pass || !req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! All fields are required!' });
+    return res.status(400).json({ error: 'All fields are required!' });
   }
 
   if (req.body.pass !== req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! Passwords do not match!' });
+    return res.status(400).json({ error: 'Passwords do not match!' });
   }
 
   return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
@@ -94,6 +95,6 @@ const getToken = (request, response) => {
 module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
-module.exports.signupPage = signupPage;
+// module.exports.signupPage = signupPage;
 module.exports.signup = signup;
 module.exports.getToken = getToken;

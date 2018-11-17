@@ -10,16 +10,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
-<body> 
+<body>
   <nav>
     <ul>
       <li><a href="/login">VGTimer</a></li>
-      <li><div class="navlink"><a id="loginButton" href="/login">Login</a></div></li>
-      <li><div class="navlink"><a id="signupButton" href="/signup">Sign up</a></div></li>
+      <li id="searchNav"><a href="/addPage">Search</a></li>
+      <li id="gameNav"><a href="/list">View Games</a></li>
+      <li><div class="navlink"><a href="/logout">Log out</a></div></li>
     </ul>
   </nav>
-  <section id="content"></section>
-
-  <script src="/assets/loginBundle.js"></script>
+  <section id="content">
+  </section>
+  <script src="/assets/defaultBundle.js"></script>
 </body>
 </html>
