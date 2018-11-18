@@ -20,7 +20,6 @@ const defaultPage = (req, res) => res.render('default', { csrfToken: req.csrfTok
 const listPage = (req, res) => res.render('list', { csrfToken: req.csrfToken() });
 
 const addGame = (req, res) => {
-  console.log(req.body);
   if (!req.body.name || !req.body.year) {
     return res.status(400).json({ error: 'Name, year required' });
   }
@@ -30,7 +29,7 @@ const addGame = (req, res) => {
     year: req.body.year,
     gameId: req.body.gameId,
     platform: req.body.platform,
-    category: req.body.platform,
+    category: req.body.category,
     owner: req.session.account._id,
   };
 
@@ -81,12 +80,10 @@ const removeGame = (request, response) => {
 
 // Makes call to external API
 const searchGames = (request, response) => {
-  console.log('search');
   const req = request;
   const res = response;
   const parsedUrl = req._parsedUrl.query;
   const searchTerm = (parsedUrl);
-  console.log(searchTerm);
   const config = {
     fields: ['name', 'original_release_date', 'expected_release_year', 'id', 'platforms', 'image'],
     sortBy: 'original_release_date',

@@ -17,7 +17,38 @@ const HomeButtons = (props) => {
     <div className="homeButtons">
       <button><a href="/addPage">Search and Add Games</a></button>
       <button><a href="/list">View List</a></button>
+      <button id="changePassButton">Change your password</button>
     </div>
+  );
+};
+
+const ChangePassWindow = (props) => {
+  return (
+  <div className = 'ChangePassWindow'>
+    <form id="changePassForm" 
+      name="changePassForm"
+      onSubmit={handleChangePassword}
+      action="/changePassword"
+      method="POST"
+      className="mainForm"
+    >
+      <label htmlFor="username">Username: </label>
+      <input id="user" type="text" name="username"/>
+      <label htmlFor="pass"> Old Password: </label>
+      <input id="oldPass" type="password" name="oldPass" />
+      <label htmlFor="pass2"> New Password: </label>
+      <input id="newPass" type="password" name="newPass" />
+      <input type="hidden" name="_csrf" value={props.csrf}/>
+      <input className="formSubmit" type="submit" value="Change password" />
+    </form>
+  </div>
+  );
+};
+
+const createChangePassWindow = (csrf) => {
+  ReactDOM.render(
+    <ChangePassWindow csrf={csrf} />,
+    document.querySelector("#content")
   );
 };
 
@@ -25,6 +56,14 @@ const setup = function(csrf) {
   ReactDOM.render(
     <App csrf={csrf} />, document.querySelector("#content")
   );
+
+  const changePassButton = document.querySelector("#changePassButton");
+
+  changePassButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    createChangePassWindow(csrf);
+    return false;
+  });
 };
 
 const getToken = () => {

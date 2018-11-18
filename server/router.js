@@ -15,6 +15,7 @@ const router = (app) => {
   app.get('/search', mid.requiresLogin, controllers.Game.searchGames);
   app.get('/default', mid.requiresLogin, controllers.Game.defaultPage);
   app.get('/list', mid.requiresLogin, controllers.Game.listPage);
+  app.post('/changePassword', mid.requiresLogin, controllers.Account.changePassword);
 };
 
 module.exports = router;

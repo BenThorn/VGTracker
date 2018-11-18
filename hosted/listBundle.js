@@ -28,7 +28,57 @@ var App = function (_React$Component) {
           null,
           "List"
         ),
-        React.createElement("div", { id: "gameList" })
+        React.createElement(RemoveForm, { csrf: this.props.csrf }),
+        React.createElement(
+          "div",
+          { id: "current" },
+          React.createElement(
+            "h3",
+            null,
+            "Currently playing"
+          ),
+          React.createElement("div", { className: "currentList" })
+        ),
+        React.createElement(
+          "div",
+          { id: "owned" },
+          React.createElement(
+            "h3",
+            null,
+            "Own but never played"
+          ),
+          React.createElement("div", { className: "ownedList" })
+        ),
+        React.createElement(
+          "div",
+          { id: "finished" },
+          React.createElement(
+            "h3",
+            null,
+            "Finished"
+          ),
+          React.createElement("div", { className: "finishedList" })
+        ),
+        React.createElement(
+          "div",
+          { id: "hold" },
+          React.createElement(
+            "h3",
+            null,
+            "On hold"
+          ),
+          React.createElement("div", { className: "holdList" })
+        ),
+        React.createElement(
+          "div",
+          { id: "dropped" },
+          React.createElement(
+            "h3",
+            null,
+            "Dropped"
+          ),
+          React.createElement("div", { className: "droppedList" })
+        )
       );
     }
   }]);
@@ -38,6 +88,45 @@ var App = function (_React$Component) {
 
 ;
 
+var GameList = function GameList(props) {
+  if (props.games.length === 0) {
+    return React.createElement(
+      "div",
+      { className: "gameList" },
+      React.createElement(
+        "h3",
+        { className: "emptyGames" },
+        "No games in your collection."
+      )
+    );
+  }
+
+  var gameNodes = props.games.map(function (game) {
+    var node = createGameNode(game, props.currentCategory);
+    return node;
+  });
+
+  console.log(props.currentCategory, gameNodes);
+
+  if (gameNodes[0] === undefined) {
+    return React.createElement(
+      "div",
+      { className: "gameList" },
+      React.createElement(
+        "p",
+        null,
+        "Currently no games in this category."
+      )
+    );
+  } else {
+    return React.createElement(
+      "div",
+      { className: "gameList" },
+      gameNodes
+    );
+  }
+};
+
 var setup = function setup(csrf) {
   ReactDOM.render(React.createElement(App, { csrf: csrf }), document.querySelector("#content"));
 
@@ -46,25 +135,16 @@ var setup = function setup(csrf) {
 
 var loadGamesFromServer = function loadGamesFromServer() {
   sendAjax('GET', '/getGames', null, function (data) {
-    ReactDOM.render(React.createElement(GameList, { games: data.games }), document.querySelector("#gameList"));
+    var categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
+
+    for (var i = 0; i < categories.length; i++) {
+      ReactDOM.render(React.createElement(GameList, { games: data.games, currentCategory: categories[i] }), document.querySelector("." + categories[i] + "List"));
+    }
   });
 };
 
-var GameList = function GameList(props) {
-  console.log(props.games);
-  if (props.games.length === 0) {
-    return React.createElement(
-      "div",
-      { className: "gameList" },
-      React.createElement(
-        "h3",
-        { className: "emptyGames" },
-        "No Games yet"
-      )
-    );
-  }
-
-  var gameNodes = props.games.map(function (game) {
+var createGameNode = function createGameNode(game, currentCategory) {
+  if (game.category === currentCategory) {
     var year = void 0;
     // Check if the date wasn't available from the API
     if (game.year === 0) {
@@ -76,27 +156,68 @@ var GameList = function GameList(props) {
       "div",
       { key: game._id, className: "game" },
       React.createElement(
-        "h3",
-        { className: "gameName" },
-        " Name: ",
-        game.name,
-        " "
-      ),
-      React.createElement(
-        "h3",
-        { className: "gameYear" },
-        " Year: ",
-        year,
-        " "
+        "form",
+        {
+          id: game._id,
+          className: "gameNodeForm",
+          onSubmit: handleRemoveGame,
+          action: "removeList"
+        },
+        React.createElement(
+          "p",
+          { className: "gameNodeName" },
+          " ",
+          game.name,
+          " "
+        ),
+        React.createElement(
+          "p",
+          { className: "gameNodeYear" },
+          " ",
+          year,
+          " "
+        ),
+        React.createElement(
+          "p",
+          { className: "gameNodePlatform" },
+          " ",
+          game.platform,
+          " "
+        ),
+        React.createElement(
+          "select",
+          { id: "gameNodeCategory", value: game.category },
+          React.createElement(
+            "option",
+            { value: "current" },
+            "Currently playing"
+          ),
+          React.createElement(
+            "option",
+            { value: "owned" },
+            "Owned, but not played"
+          ),
+          React.createElement(
+            "option",
+            { value: "finished" },
+            "Finished"
+          ),
+          React.createElement(
+            "option",
+            { value: "hold" },
+            "On hold"
+          ),
+          React.createElement(
+            "option",
+            { value: "dropped" },
+            "Dropped"
+          )
+        ),
+        React.createElement("input", { type: "hidden", id: "gameId", value: game.gameId }),
+        React.createElement("input", { type: "submit", value: "Remove Game From Collection" })
       )
     );
-  });
-
-  return React.createElement(
-    "div",
-    { className: "gameList" },
-    gameNodes
-  );
+  }
 };
 
 var getToken = function getToken() {
@@ -155,7 +276,6 @@ var handleAdd = function handleAdd(e) {
     handleError("All fields are required");
     return false;
   }
-
   sendAjax('POST', $("#addForm").attr("action"), $("#addForm").serialize(), function () {
     loadSearchResults($(".resultList").data('results'));
   });
@@ -163,11 +283,16 @@ var handleAdd = function handleAdd(e) {
   return false;
 };
 
-var handleRemove = function handleRemove(e) {
+var handleRemove = function handleRemove(e, page) {
   e.preventDefault();
 
   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function () {
-    loadSearchResults($(".resultList").data('results'));
+    // Differentiate between removing from the search page or the list page
+    if (page === 'result') {
+      loadSearchResults($(".resultList").data('results'));
+    } else if (page === 'gameNodeForm') {
+      loadGamesFromServer();
+    }
   });
 
   return false;
@@ -206,9 +331,35 @@ var handleRemoveGame = function handleRemoveGame(e) {
 
   var form = e.target;
 
-  $("#gameIdRemove").val(form.resultGameId.value.toString());
+  console.log(form.className);
 
-  handleRemove(e);
+  if (form.className === 'gameNodeForm') {
+    $("#gameIdRemove").val(form.gameId.value.toString());
+  } else if (form.className === 'result') {
+    $("#gameIdRemove").val(form.resultGameId.value.toString());
+  }
+
+  handleRemove(e, form.className);
+};
+
+var handleChangePassword = function handleChangePassword(e) {
+  console.log('change password');
+
+  e.preventDefault();
+
+  if ($("#oldPass").val() == '' || $("#newPass").val() == '') {
+    handleError("All fields are required");
+    return false;
+  }
+
+  if ($("#oldPass").val() === $("#newPass").val()) {
+    handleError("Please enter a different password");
+    return false;
+  }
+
+  sendAjax('POST', $("#changePassForm").attr("action"), $("#changePassForm").serialize(), redirect);
+
+  return false;
 };
 "use strict";
 

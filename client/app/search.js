@@ -16,7 +16,6 @@ const SearchForm = (props) => {
 };
 
 const SearchResults = (props) => {
-  console.log(props);
   let submitValue = "Add Game";
   let submitMethod = handleSendGame;
 
@@ -107,5 +106,4 @@ const populateDropdown = (platforms) => {
       <option value="N/A">No system listed</option>
     </select>);
   }
-
 };

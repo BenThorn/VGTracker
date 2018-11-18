@@ -10,8 +10,6 @@ class App extends React.Component {
         <SearchForm csrf = {this.props.csrf} />
         <div id="searchResults">
         </div>
-        <div id="gameList">
-        </div>
       </div>
     );
   }

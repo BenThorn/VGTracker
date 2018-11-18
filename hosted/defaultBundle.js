@@ -59,12 +59,66 @@ var HomeButtons = function HomeButtons(props) {
         { href: "/list" },
         "View List"
       )
+    ),
+    React.createElement(
+      "button",
+      { id: "changePassButton" },
+      "Change your password"
     )
   );
 };
 
+var ChangePassWindow = function ChangePassWindow(props) {
+  return React.createElement(
+    "div",
+    { className: "ChangePassWindow" },
+    React.createElement(
+      "form",
+      { id: "changePassForm",
+        name: "changePassForm",
+        onSubmit: handleChangePassword,
+        action: "/changePassword",
+        method: "POST",
+        className: "mainForm"
+      },
+      React.createElement(
+        "label",
+        { htmlFor: "username" },
+        "Username: "
+      ),
+      React.createElement("input", { id: "user", type: "text", name: "username" }),
+      React.createElement(
+        "label",
+        { htmlFor: "pass" },
+        " Old Password: "
+      ),
+      React.createElement("input", { id: "oldPass", type: "password", name: "oldPass" }),
+      React.createElement(
+        "label",
+        { htmlFor: "pass2" },
+        " New Password: "
+      ),
+      React.createElement("input", { id: "newPass", type: "password", name: "newPass" }),
+      React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+      React.createElement("input", { className: "formSubmit", type: "submit", value: "Change password" })
+    )
+  );
+};
+
+var createChangePassWindow = function createChangePassWindow(csrf) {
+  ReactDOM.render(React.createElement(ChangePassWindow, { csrf: csrf }), document.querySelector("#content"));
+};
+
 var setup = function setup(csrf) {
   ReactDOM.render(React.createElement(App, { csrf: csrf }), document.querySelector("#content"));
+
+  var changePassButton = document.querySelector("#changePassButton");
+
+  changePassButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    createChangePassWindow(csrf);
+    return false;
+  });
 };
 
 var getToken = function getToken() {
@@ -123,7 +177,6 @@ var handleAdd = function handleAdd(e) {
     handleError("All fields are required");
     return false;
   }
-
   sendAjax('POST', $("#addForm").attr("action"), $("#addForm").serialize(), function () {
     loadSearchResults($(".resultList").data('results'));
   });
@@ -131,11 +184,16 @@ var handleAdd = function handleAdd(e) {
   return false;
 };
 
-var handleRemove = function handleRemove(e) {
+var handleRemove = function handleRemove(e, page) {
   e.preventDefault();
 
   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function () {
-    loadSearchResults($(".resultList").data('results'));
+    // Differentiate between removing from the search page or the list page
+    if (page === 'result') {
+      loadSearchResults($(".resultList").data('results'));
+    } else if (page === 'gameNodeForm') {
+      loadGamesFromServer();
+    }
   });
 
   return false;
@@ -174,9 +232,35 @@ var handleRemoveGame = function handleRemoveGame(e) {
 
   var form = e.target;
 
-  $("#gameIdRemove").val(form.resultGameId.value.toString());
+  console.log(form.className);
 
-  handleRemove(e);
+  if (form.className === 'gameNodeForm') {
+    $("#gameIdRemove").val(form.gameId.value.toString());
+  } else if (form.className === 'result') {
+    $("#gameIdRemove").val(form.resultGameId.value.toString());
+  }
+
+  handleRemove(e, form.className);
+};
+
+var handleChangePassword = function handleChangePassword(e) {
+  console.log('change password');
+
+  e.preventDefault();
+
+  if ($("#oldPass").val() == '' || $("#newPass").val() == '') {
+    handleError("All fields are required");
+    return false;
+  }
+
+  if ($("#oldPass").val() === $("#newPass").val()) {
+    handleError("Please enter a different password");
+    return false;
+  }
+
+  sendAjax('POST', $("#changePassForm").attr("action"), $("#changePassForm").serialize(), redirect);
+
+  return false;
 };
 "use strict";
 

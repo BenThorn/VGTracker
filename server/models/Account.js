@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
+const convertId = mongoose.Types.ObjectId;
 
 let AccountModel = {};
 const iterations = 10000;
@@ -78,6 +79,39 @@ AccountModel.findByUsername(username, (err, doc) => {
       return callback(null, doc);
     }
 
+    return callback();
+  });
+});
+
+AccountSchema.statics.changePassword = (username, oldPassword, newPassword, callback) =>
+AccountModel.findByUsername(username, (err, doc) => {
+  if(err) {
+    return callback(err);
+  }
+
+  if(!doc) {
+    return callback(err);
+  }
+  console.dir(oldPassword);
+  return validatePassword(doc, oldPassword, (result) => {
+    if(result === true) {
+      let newHash;
+      return crypto.pbkdf2(newPassword, doc.salt, iterations, keyLength, 'RSA-SHA512', (err, hash) => {
+        if(!err) {
+          newHash = hash.toString('hex');
+          doc.set( 'password', newHash );
+          doc.save((err) => {
+            if (err){
+              return callback(err);
+            } else {
+              return callback(null, true);
+            }
+          });
+        } else {
+          callback(err);
+        }
+      });
+    }
     return callback();
   });
 });

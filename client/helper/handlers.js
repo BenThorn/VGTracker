@@ -6,7 +6,6 @@ const handleAdd = (e) => {
     handleError("All fields are required");
     return false;
   }
-
   sendAjax('POST', $("#addForm").attr("action"), $("#addForm").serialize(), function() {
     loadSearchResults($(".resultList").data('results'));
   });
@@ -14,11 +13,16 @@ const handleAdd = (e) => {
   return false;
 };
 
-const handleRemove = (e) => {
+const handleRemove = (e, page) => {
   e.preventDefault();
 
   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function() {
-    loadSearchResults($(".resultList").data('results'));
+    // Differentiate between removing from the search page or the list page
+    if (page === 'result') {
+      loadSearchResults($(".resultList").data('results'));
+    } else if (page  === 'gameNodeForm') {
+      loadGamesFromServer();
+    }
   });
 
   return false;
@@ -58,7 +62,33 @@ const handleRemoveGame = (e) => {
 
   const form = e.target;
 
-  $("#gameIdRemove").val(form.resultGameId.value.toString());
+  console.log(form.className);
 
-  handleRemove(e);
+  if(form.className === 'gameNodeForm') {
+    $("#gameIdRemove").val(form.gameId.value.toString());
+  } else if(form.className === 'result') {
+    $("#gameIdRemove").val(form.resultGameId.value.toString());
+  }
+
+  handleRemove(e, form.className);
+};
+
+const handleChangePassword = (e) => {
+  console.log('change password');
+
+  e.preventDefault();
+
+  if( $("#oldPass").val() == '' || $("#newPass").val() == '') {
+    handleError("All fields are required");
+    return false;
+  }
+
+  if($("#oldPass").val() === $("#newPass").val()) {
+    handleError("Please enter a different password");
+    return false;
+  }
+
+  sendAjax('POST', $("#changePassForm").attr("action"), $("#changePassForm").serialize(), redirect);
+
+  return false;
 };

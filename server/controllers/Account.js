@@ -67,7 +67,7 @@ const signup = (request, response) => {
 
     savePromise.then(() => {
       req.session.account = Account.AccountModel.toAPI(newAccount);
-      return res.json({ redirect: '/addPage' });
+      return res.json({ redirect: '/default' });
     });
 
     savePromise.catch((err) => {
@@ -79,6 +79,23 @@ const signup = (request, response) => {
 
       return res.status(400).json({ error: 'An error occured' });
     });
+  });
+};
+
+const changePass = (request, response) => {
+  const req = request;
+  const res = response;
+
+  const user = req.body.username;
+  const oldPassword = req.body.oldPass;
+  const newPassword = req.body.newPass;
+
+  return Account.AccountModel.changePassword(user, oldPassword, newPassword, (err, doc) => {
+    if (err || !doc) {
+      return res.status(401).json({ error: 'Wrong username or password' });
+    }
+
+    return res.json({ redirect: '/login' });
   });
 };
 
@@ -95,6 +112,6 @@ const getToken = (request, response) => {
 module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
-// module.exports.signupPage = signupPage;
+module.exports.changePassword = changePass;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
