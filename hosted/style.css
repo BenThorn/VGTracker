@@ -1,10 +1,14 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500");
 body {
-  margin: 0;
+  margin: 0 auto;
+  min-width: 1000px;
   overflow: scroll;
+  background-color: lightcyan;
+  font-family: "Roboto", sans-serif;
 }
 
 nav {
-  background-color: red;
+  background-color: darkcyan;
 }
 nav ul {
   text-align: center;
@@ -19,43 +23,35 @@ nav li {
   margin-left: 20px;
   display: inline-block;
   cursor: pointer;
+  background-color: cyan;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+nav li a {
+  text-decoration: none;
+}
+nav li:hover {
+  background-color: #d0e9e9;
 }
 
 .LoginWindow, .SignupWindow {
   max-width: 750px;
   margin: 0 auto;
-  margin-top: 100px;
-}
-.LoginWindow #loginForm, .LoginWindow #signupForm, .SignupWindow #loginForm, .SignupWindow #signupForm {
-  background-color: gray;
-  margin: 0;
   text-align: center;
-  width: 350px;
-  display: inline-block;
-}
-.LoginWindow #loginForm label, .LoginWindow #signupForm label, .SignupWindow #loginForm label, .SignupWindow #signupForm label {
-  display: inline-block;
-  margin-right: 10px;
-  text-align: right;
-  width: 120px;
-}
-.LoginWindow #loginForm input, .LoginWindow #signupForm input, .SignupWindow #loginForm input, .SignupWindow #signupForm input {
-  text-align: center;
-  width: 100px;
 }
 .LoginWindow #welcome, .SignupWindow #welcome {
+  text-align: center;
   font-size: 24px;
-  display: inline-block;
   width: 300px;
-  margin-right: 50px;
+  margin: 0 auto;
 }
 
 .mainForm {
   height: 300px;
   width: 350px;
   margin: 0 auto;
-  padding-top: 350px;
-  font-size: 1.2em;
+  padding-top: 150px;
+  font-size: 20px;
 }
 .mainForm h3 {
   text-align: center;
@@ -65,11 +61,142 @@ nav li {
   width: 100px;
   margin-right: 10px;
   text-align: right;
-  font-size: 1.2em;
+  font-size: 20px;
+}
+.mainForm input[type=submit] {
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+  display: block;
 }
 
 #addForm, #removeForm {
   display: none;
+}
+
+.App {
+  margin: 0 auto;
+  max-width: 1000px;
+}
+.App #searchForm {
+  margin-top: 10px;
+}
+
+.result {
+  background-color: #d0e9e9;
+  border: 1px solid #003e3e;
+  padding: 10px;
+  border-radius: 10px;
+}
+.result #imgWrapper {
+  height: 120px;
+  width: 120px;
+  overflow: hidden;
+  display: inline-block;
+}
+.result #imgWrapper img {
+  width: 100%;
+  margin: 0 auto;
+}
+.result #resultInfo {
+  display: inline-block;
+  left: 50px;
+  bottom: 10px;
+  position: relative;
+}
+.result #resultInfo p {
+  margin-top: 0px;
+  font-size: 20px;
+}
+.result #resultInfo #resultName {
+  margin-bottom: 10px;
+}
+.result #resultInfo #resultYear {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.result #resultInfo select {
+  font-size: 14px;
+  margin-bottom: 10px;
+  width: 200px;
+}
+.result #resultInfo input {
+  font-family: "Roboto", sans-serif;
+  background-color: darkcyan;
+  color: white;
+  width: 200px;
+  height: 50px;
+  font-size: 18px;
+  border: none;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  position: relative;
+  left: 200px;
+  top: 9px;
+}
+.result:last-child {
+  margin-bottom: 150px;
+}
+
+#current, #owned, #finished, #hold, #dropped {
+  background-color: #d0e9e9;
+  border: 1px solid #003e3e;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+#current .gameNodeForm, #owned .gameNodeForm, #finished .gameNodeForm, #hold .gameNodeForm, #dropped .gameNodeForm {
+  background: lightcyan;
+  border: 3px solid cyan;
+  padding: 5px;
+}
+#current h3, #owned h3, #finished h3, #hold h3, #dropped h3 {
+  margin-top: 5px;
+  border-bottom: 1px solid #003e3e;
+}
+#current p, #owned p, #finished p, #hold p, #dropped p {
+  margin-top: 5px;
+}
+#current input, #owned input, #finished input, #hold input, #dropped input {
+  font-family: "Roboto", sans-serif;
+  background-color: darkcyan;
+  color: white;
+  height: 30px;
+  border: none;
+  font-size: 16px;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+}
+
+#current {
+  margin-top: 20px;
+}
+
+#default {
+  text-align: center;
+}
+#default .homeButtons div button {
+  font-family: "Roboto", sans-serif;
+  background-color: darkcyan;
+  color: white;
+  width: 210px;
+  height: 210px;
+  border: none;
+  font-size: 30px;
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 10px;
+}
+#default .homeButtons div button a {
+  color: white;
+  text-decoration: none;
+}
+#default #changePassButton {
+  margin-top: 20px;
 }
 
 /*# sourceMappingURL=style.css.map */

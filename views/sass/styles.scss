@@ -1,10 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+
+$color-nav: darkcyan;
+$color-background: #d0e9e9;
+$color-dark: #003e3e;
+$roboto: 'Roboto', sans-serif;
+
 body {
-  margin: 0;
+  margin: 0 auto;
+  min-width: 1000px;
   overflow: scroll;
+  background-color: lightcyan;
+  font-family: $roboto;
 }
 
 nav {
-  background-color: red;
+  background-color: $color-nav;
   ul {
     text-align: center;
     list-style-type: none;
@@ -19,6 +29,18 @@ nav {
     margin-left: 20px;
     display: inline-block;
     cursor: pointer;
+
+    background-color: cyan;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    a {
+      text-decoration: none;
+    }
+
+    &:hover {
+      background-color: $color-background;
+    }
   }
 }
 
@@ -26,32 +48,12 @@ nav {
 .LoginWindow, .SignupWindow {
   max-width: 750px;
   margin: 0 auto;
-  margin-top: 100px;
-  #loginForm, #signupForm {
-    background-color: gray;
-    margin: 0;
-    text-align: center;
-    width: 350px;
-    display: inline-block;
-  
-    label {
-      display: inline-block;
-      margin-right: 10px;
-      text-align: right;
-      width: 120px;
-    }
-  
-    input {
-      text-align: center;
-      width: 100px;
-    }
-  }
-
+  text-align: center;
   #welcome {
+    text-align: center;
     font-size: 24px;
-    display: inline-block;
     width: 300px;
-    margin-right: 50px;
+    margin: 0 auto;
   }
 }
 
@@ -59,20 +61,172 @@ nav {
   height: 300px;
   width: 350px;
   margin: 0 auto;
-  padding-top: 350px;
-  font-size: 1.2em;
-    h3 {
-      text-align: center;
+  padding-top: 150px;
+  font-size: 20px;
+  h3 {
+    text-align: center;
+  }
+  label {
+    display: inline-block;
+    width: 100px;
+    margin-right: 10px;
+    text-align: right;
+    font-size: 20px;
+  }
+
+  input[type=submit], {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+    display: block;
+  }
+}
+
+#addForm, #removeForm {
+  display: none;
+}
+
+.App {
+  margin: 0 auto;
+  max-width: 1000px;
+
+  #searchForm {
+    margin-top: 10px;
+  }
+}
+
+.result {
+  background-color: $color-background;
+  border: 1px solid $color-dark;
+  padding: 10px;
+  border-radius: 10px;
+
+  #imgWrapper {
+    height: 120px;
+    width: 120px;
+    overflow: hidden;
+    display: inline-block;
+    img {
+      width: 100%;
+      margin: 0 auto;
     }
-    label {
+  }
+  #resultInfo {
+    display: inline-block;
+    left: 50px;
+    bottom: 10px;
+    position: relative;
+
+    p {
+      margin-top: 0px;
+      font-size: 20px;
+    }
+
+    #resultName {
+      margin-bottom: 10px;
+    }
+
+    #resultYear {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    select {
+      font-size: 14px;
+      margin-bottom: 10px;
+      width: 200px;
+    }
+
+    input {
+      font-family: $roboto;
+      background-color: $color-nav;
+      color: white;
+      width: 200px;
+      height: 50px;
+      font-size: 18px;
+      border: none;
       display: inline-block;
-      width: 100px;
-      margin-right: 10px;
-      text-align: right;
-      font-size: 1.2em;
+      text-align: center;
+      text-decoration: none;  
+      position: relative;
+      left: 200px;
+      top: 9px;
+    }
+
+
+  }
+
+  &:last-child {
+    margin-bottom: 150px;
+  }
+}
+
+#current, #owned, #finished, #hold, #dropped {
+  background-color: $color-background;
+  border: 1px solid $color-dark;
+  padding: 10px;
+  border-radius: 10px;
+
+  .gameNodeForm {
+    background: lightcyan;
+    border: 3px solid cyan;
+    padding: 5px;
+  }
+
+  h3 {
+    margin-top: 5px;
+    border-bottom: 1px solid $color-dark;
+  }
+
+  margin-bottom: 10px;
+  p {
+    margin-top: 5px;
+  }
+
+  input {
+    font-family: $roboto;
+    background-color: $color-nav;
+    color: white;
+    height: 30px;
+    border: none;
+    font-size: 16px;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;  
+  }
+}
+
+#current {
+  margin-top: 20px;
+}
+
+#default {
+  text-align: center;
+
+  .homeButtons {
+    div{
+      button {
+        font-family: $roboto;
+        background-color: $color-nav;
+        color: white;
+        width: 210px;
+        height: 210px;
+        border: none;
+        font-size: 30px;
+        display: inline-block;
+        position: relative;
+        text-align: center;
+        text-decoration: none;  
+        margin-left: 10px;
+        a {
+          color: white;
+          text-decoration: none;
+        }
+      }
     }
   }
 
-  #addForm, #removeForm {
-    display: none;
+  #changePassButton {
+    margin-top: 20px;
   }
+}

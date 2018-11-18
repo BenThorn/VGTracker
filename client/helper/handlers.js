@@ -35,6 +35,9 @@ const handleSearch = (e) => {
     handleError("Please fill in a search term.");
     return false;
   }
+
+  $("#searchResults").text("Searching...");
+
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), (data) => {
     console.log(data);
     loadSearchResults(data);

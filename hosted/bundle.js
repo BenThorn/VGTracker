@@ -75,11 +75,6 @@ var SearchForm = function SearchForm(props) {
       method: "GET",
       className: "searchForm"
     },
-    React.createElement(
-      "label",
-      { htmlFor: "search" },
-      "Name: "
-    ),
     React.createElement("input", { id: "searchTerm", type: "text", name: "searchTerm", placeholder: "Title" }),
     React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
     React.createElement("input", { className: "searchSubmit", type: "submit", value: "Search for Game" })
@@ -122,50 +117,59 @@ var SearchResults = function SearchResults(props) {
         className: "result"
       },
       React.createElement(
-        "p",
-        { id: "resultName" },
-        result.name,
-        " "
+        "div",
+        { id: "imgWrapper" },
+        React.createElement("img", { src: result.image['small_url'], alt: "image" })
       ),
       React.createElement(
-        "p",
-        { id: "resultYear" },
-        formatDate(result.original_release_date, result.expected_release_year, false),
-        " "
-      ),
-      populateDropdown(result.platforms),
-      React.createElement(
-        "select",
-        { id: "resultCategory" },
+        "div",
+        { id: "resultInfo" },
         React.createElement(
-          "option",
-          { value: "current" },
-          "Currently playing"
+          "p",
+          { id: "resultName" },
+          result.name,
+          " "
         ),
         React.createElement(
-          "option",
-          { value: "owned" },
-          "Owned, but not played"
+          "p",
+          { id: "resultYear" },
+          formatDate(result.original_release_date, result.expected_release_year, false),
+          " "
         ),
+        populateDropdown(result.platforms),
         React.createElement(
-          "option",
-          { value: "finished" },
-          "Finished"
+          "select",
+          { id: "resultCategory" },
+          React.createElement(
+            "option",
+            { value: "current" },
+            "Currently playing"
+          ),
+          React.createElement(
+            "option",
+            { value: "owned" },
+            "Owned, but not played"
+          ),
+          React.createElement(
+            "option",
+            { value: "finished" },
+            "Finished"
+          ),
+          React.createElement(
+            "option",
+            { value: "hold" },
+            "On hold"
+          ),
+          React.createElement(
+            "option",
+            { value: "dropped" },
+            "Dropped"
+          )
         ),
-        React.createElement(
-          "option",
-          { value: "hold" },
-          "On hold"
-        ),
-        React.createElement(
-          "option",
-          { value: "dropped" },
-          "Dropped"
-        )
-      ),
-      React.createElement("input", { id: "resultGameId", type: "hidden", name: "resultGameId", value: result.id }),
-      React.createElement("input", { id: "resultYearVal", type: "hidden", name: "resultYearVal", value: formatDate(result.original_release_date, result.expected_release_year, true) }),
-      React.createElement("input", { id: "resultSubmit", type: "submit", value: submitValue })
+        React.createElement("input", { id: "resultGameId", type: "hidden", name: "resultGameId", value: result.id }),
+        React.createElement("input", { id: "resultYearVal", type: "hidden", name: "resultYearVal", value: formatDate(result.original_release_date, result.expected_release_year, true) }),
+        React.createElement("input", { id: "resultSubmit", type: "submit", value: submitValue })
+      )
     );
   });
 
@@ -300,6 +304,9 @@ var handleSearch = function handleSearch(e) {
     handleError("Please fill in a search term.");
     return false;
   }
+
+  $("#searchResults").text("Searching...");
+
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
     console.log(data);
     loadSearchResults(data);

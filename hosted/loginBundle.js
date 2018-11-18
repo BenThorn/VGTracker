@@ -38,7 +38,7 @@ var LoginWindow = function LoginWindow(props) {
     React.createElement(
       "div",
       { id: "welcome" },
-      "Welcome to VGTimer! Please login, or sign up if you don't have an account."
+      "Welcome to VGTracker! Please login, or sign up if you don't have an account."
     ),
     React.createElement(
       "form",
@@ -215,6 +215,9 @@ var handleSearch = function handleSearch(e) {
     handleError("Please fill in a search term.");
     return false;
   }
+
+  $("#searchResults").text("Searching...");
+
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
     console.log(data);
     loadSearchResults(data);

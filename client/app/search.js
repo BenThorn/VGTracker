@@ -7,7 +7,6 @@ const SearchForm = (props) => {
       method="GET"
       className="searchForm"
     >
-      <label htmlFor="search">Name: </label>
       <input id="searchTerm" type="text" name="searchTerm" placeholder="Title"/>
       <input type="hidden" name="_csrf" value={props.csrf} />
       <input className="searchSubmit" type="submit" value="Search for Game" />
@@ -45,19 +44,24 @@ const SearchResults = (props) => {
         name={result.name}
         className="result"
       >
-        <p id="resultName">{result.name} </p>
-        <p id="resultYear">{formatDate(result.original_release_date, result.expected_release_year, false)} </p>
-        {populateDropdown(result.platforms)}
-        <select id="resultCategory">
-          <option value="current">Currently playing</option>
-          <option value="owned">Owned, but not played</option>
-          <option value="finished">Finished</option>
-          <option value="hold">On hold</option>
-          <option value="dropped">Dropped</option>
-        </select>
-        <input id="resultGameId" type="hidden" name="resultGameId" value={result.id} />
-        <input id="resultYearVal" type="hidden" name="resultYearVal" value={formatDate(result.original_release_date, result.expected_release_year, true)} />
-        <input id="resultSubmit" type="submit" value={submitValue} />
+        <div id='imgWrapper'>
+          <img src={result.image['small_url']} alt='image'/>
+        </div>
+        <div id="resultInfo">
+          <p id="resultName">{result.name} </p>
+          <p id="resultYear">{formatDate(result.original_release_date, result.expected_release_year, false)} </p>
+          {populateDropdown(result.platforms)}
+          <select id="resultCategory">
+            <option value="current">Currently playing</option>
+            <option value="owned">Owned, but not played</option>
+            <option value="finished">Finished</option>
+            <option value="hold">On hold</option>
+            <option value="dropped">Dropped</option>
+          </select>
+          <input id="resultGameId" type="hidden" name="resultGameId" value={result.id} />
+          <input id="resultYearVal" type="hidden" name="resultYearVal" value={formatDate(result.original_release_date, result.expected_release_year, true)} />
+          <input id="resultSubmit" type="submit" value={submitValue} />
+        </div>
       </form>
     );
   });

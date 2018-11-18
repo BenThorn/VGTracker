@@ -23,11 +23,6 @@ var App = function (_React$Component) {
       return React.createElement(
         "div",
         { className: "App" },
-        React.createElement(
-          "h3",
-          null,
-          "List"
-        ),
         React.createElement(RemoveForm, { csrf: this.props.csrf }),
         React.createElement(
           "div",
@@ -37,7 +32,15 @@ var App = function (_React$Component) {
             null,
             "Currently playing"
           ),
-          React.createElement("div", { className: "currentList" })
+          React.createElement(
+            "div",
+            { className: "currentList" },
+            React.createElement(
+              "p",
+              null,
+              "No games in this category."
+            )
+          )
         ),
         React.createElement(
           "div",
@@ -90,25 +93,17 @@ var App = function (_React$Component) {
 
 var GameList = function GameList(props) {
   if (props.games.length === 0) {
-    return React.createElement(
-      "div",
-      { className: "gameList" },
-      React.createElement(
-        "h3",
-        { className: "emptyGames" },
-        "No games in your collection."
-      )
-    );
+    return React.createElement("div", { className: "gameList" });
   }
 
   var gameNodes = props.games.map(function (game) {
     var node = createGameNode(game, props.currentCategory);
-    return node;
+    if (node !== null) {
+      return node;
+    }
   });
 
-  console.log(props.currentCategory, gameNodes);
-
-  if (gameNodes[0] === undefined) {
+  if (gameNodes[0] === null) {
     return React.createElement(
       "div",
       { className: "gameList" },
@@ -184,39 +179,12 @@ var createGameNode = function createGameNode(game, currentCategory) {
           game.platform,
           " "
         ),
-        React.createElement(
-          "select",
-          { id: "gameNodeCategory", value: game.category },
-          React.createElement(
-            "option",
-            { value: "current" },
-            "Currently playing"
-          ),
-          React.createElement(
-            "option",
-            { value: "owned" },
-            "Owned, but not played"
-          ),
-          React.createElement(
-            "option",
-            { value: "finished" },
-            "Finished"
-          ),
-          React.createElement(
-            "option",
-            { value: "hold" },
-            "On hold"
-          ),
-          React.createElement(
-            "option",
-            { value: "dropped" },
-            "Dropped"
-          )
-        ),
         React.createElement("input", { type: "hidden", id: "gameId", value: game.gameId }),
         React.createElement("input", { type: "submit", value: "Remove Game From Collection" })
       )
     );
+  } else {
+    return null;
   }
 };
 
@@ -305,6 +273,9 @@ var handleSearch = function handleSearch(e) {
     handleError("Please fill in a search term.");
     return false;
   }
+
+  $("#searchResults").text("Searching...");
+
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
     console.log(data);
     loadSearchResults(data);

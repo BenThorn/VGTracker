@@ -5,8 +5,10 @@ class App extends React.Component {
   render() {
     return(
       <div className='App'>
-        <h3>Welcome {}</h3>
-        <HomeButtons />
+        <div id="default">
+          <h3>Welcome to VGTracker!</h3>
+          <HomeButtons />
+        </div>
       </div>
     );
   }
@@ -15,8 +17,10 @@ class App extends React.Component {
 const HomeButtons = (props) => {
   return(
     <div className="homeButtons">
-      <button><a href="/addPage">Search and Add Games</a></button>
-      <button><a href="/list">View List</a></button>
+      <div>
+        <button><a href="/addPage">Search and Add Games</a></button>
+        <button><a href="/list">View your Collection</a></button>
+      </div>
       <button id="changePassButton">Change your password</button>
     </div>
   );

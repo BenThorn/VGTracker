@@ -2,7 +2,6 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-const convertId = mongoose.Types.ObjectId;
 
 let AccountModel = {};
 const iterations = 10000;
@@ -83,29 +82,27 @@ AccountModel.findByUsername(username, (err, doc) => {
   });
 });
 
-AccountSchema.statics.changePassword = (username, oldPassword, newPassword, callback) =>
-AccountModel.findByUsername(username, (err, doc) => {
-  if(err) {
-    return callback(err);
+AccountSchema.statics.changePassword = (username, oldPassword, newPass, callback) =>
+AccountModel.findByUsername(username, (error, doc) => {
+  if (error) {
+    return callback(error);
   }
 
-  if(!doc) {
-    return callback(err);
+  if (!doc) {
+    return callback(error);
   }
-  console.dir(oldPassword);
   return validatePassword(doc, oldPassword, (result) => {
-    if(result === true) {
+    if (result === true) {
       let newHash;
-      return crypto.pbkdf2(newPassword, doc.salt, iterations, keyLength, 'RSA-SHA512', (err, hash) => {
-        if(!err) {
+      return crypto.pbkdf2(newPass, doc.salt, iterations, keyLength, 'RSA-SHA512', (err, hash) => {
+        if (!err) {
           newHash = hash.toString('hex');
-          doc.set( 'password', newHash );
-          doc.save((err) => {
-            if (err){
-              return callback(err);
-            } else {
-              return callback(null, true);
+          doc.set('password', newHash);
+          doc.save((e) => {
+            if (e) {
+              return callback(e);
             }
+            return callback(null, true);
           });
         } else {
           callback(err);

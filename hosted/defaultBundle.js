@@ -24,11 +24,15 @@ var App = function (_React$Component) {
         "div",
         { className: "App" },
         React.createElement(
-          "h3",
-          null,
-          "Welcome "
-        ),
-        React.createElement(HomeButtons, null)
+          "div",
+          { id: "default" },
+          React.createElement(
+            "h3",
+            null,
+            "Welcome to VGTracker!"
+          ),
+          React.createElement(HomeButtons, null)
+        )
       );
     }
   }]);
@@ -43,21 +47,25 @@ var HomeButtons = function HomeButtons(props) {
     "div",
     { className: "homeButtons" },
     React.createElement(
-      "button",
+      "div",
       null,
       React.createElement(
-        "a",
-        { href: "/addPage" },
-        "Search and Add Games"
-      )
-    ),
-    React.createElement(
-      "button",
-      null,
+        "button",
+        null,
+        React.createElement(
+          "a",
+          { href: "/addPage" },
+          "Search and Add Games"
+        )
+      ),
       React.createElement(
-        "a",
-        { href: "/list" },
-        "View List"
+        "button",
+        null,
+        React.createElement(
+          "a",
+          { href: "/list" },
+          "View your Collection"
+        )
       )
     ),
     React.createElement(
@@ -206,6 +214,9 @@ var handleSearch = function handleSearch(e) {
     handleError("Please fill in a search term.");
     return false;
   }
+
+  $("#searchResults").text("Searching...");
+
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
     console.log(data);
     loadSearchResults(data);
