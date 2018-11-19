@@ -1,3 +1,4 @@
+// Class component to be rendered to the body
 class App extends React.Component {
   constructor(props){
     super(props);
@@ -15,6 +16,7 @@ class App extends React.Component {
   }
 };
 
+// Calls the external API and gets the search results data back
 const loadSearchResults = (data) => {
   // Callback so it has time to load the user's games
   getUserGames((userGames) => {
@@ -29,20 +31,21 @@ const getUserGames = (callback) => {
   sendAjax('GET', '/getGames', null, callback);
 };
 
+// Setup page
 const setup = function(csrf) {
   ReactDOM.render(
     <App csrf={csrf} />, document.querySelector("#content")
   );
-
- // loadGamesFromServer();
 };
 
+// Get CSRF token
 const getToken = () => {
   sendAjax('GET', '/getToken', null, (result) => {
     setup(result.csrfToken);
   });
 };
 
+// Ready
 $(document).ready(function() {
   getToken();
 });

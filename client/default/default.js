@@ -1,3 +1,4 @@
+// Component to be rendered to the body
 class App extends React.Component {
   constructor(props){
     super(props);
@@ -14,6 +15,7 @@ class App extends React.Component {
   }
 };
 
+// Buttons on the default screen
 const HomeButtons = (props) => {
   return(
     <div className="homeButtons">
@@ -26,6 +28,7 @@ const HomeButtons = (props) => {
   );
 };
 
+// Form for changing the password, similar to login and signup forms
 const ChangePassWindow = (props) => {
   return (
   <div className = 'ChangePassWindow'>
@@ -49,6 +52,7 @@ const ChangePassWindow = (props) => {
   );
 };
 
+// Renders the change password window
 const createChangePassWindow = (csrf) => {
   ReactDOM.render(
     <ChangePassWindow csrf={csrf} />,
@@ -56,6 +60,7 @@ const createChangePassWindow = (csrf) => {
   );
 };
 
+// Setup page
 const setup = function(csrf) {
   ReactDOM.render(
     <App csrf={csrf} />, document.querySelector("#content")
@@ -70,12 +75,14 @@ const setup = function(csrf) {
   });
 };
 
+// Get csrf token
 const getToken = () => {
   sendAjax('GET', '/getToken', null, (result) => {
     setup(result.csrfToken);
   });
 };
 
+// Ready
 $(document).ready(function() {
   getToken();
 });

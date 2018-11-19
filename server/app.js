@@ -15,6 +15,7 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/GameLog';
 
+// Connect to database
 mongoose.connect(dbURL, (err) => {
   if (err) {
     console.log('Could not connecto to database');

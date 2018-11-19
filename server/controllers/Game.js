@@ -4,6 +4,7 @@ const gb = giantbomb('a8c50336272d5cf222a55a2e86f8486011b9e0ee');
 
 const Game = models.Game;
 
+// Gets the user's games and renders them to the app page
 const addPage = (req, res) => {
   Game.GameModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
@@ -15,10 +16,13 @@ const addPage = (req, res) => {
   });
 };
 
+// Hooks up url to the default view
 const defaultPage = (req, res) => res.render('default', { csrfToken: req.csrfToken() });
 
+// Hooks up url to the list view
 const listPage = (req, res) => res.render('list', { csrfToken: req.csrfToken() });
 
+// Add game request to the database.
 const addGame = (req, res) => {
   if (!req.body.name || !req.body.year) {
     return res.status(400).json({ error: 'Name, year required' });
@@ -51,6 +55,7 @@ const addGame = (req, res) => {
   return gamePromise;
 };
 
+// Database request to get all of a user's games
 const getGames = (request, response) => {
   const req = request;
   const res = response;
@@ -65,6 +70,7 @@ const getGames = (request, response) => {
   });
 };
 
+// Database request to remove a single game from a user's collection
 const removeGame = (request, response) => {
   const req = request;
   const res = response;

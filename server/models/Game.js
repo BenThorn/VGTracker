@@ -57,6 +57,7 @@ GameSchema.statics.toAPI = (doc) => ({
   year: doc.year,
 });
 
+// Gets all the data for all of a user's games
 GameSchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
     owner: convertId(ownerId),
@@ -65,6 +66,7 @@ GameSchema.statics.findByOwner = (ownerId, callback) => {
   return GameModel.find(search).select('name year gameId platform category').exec(callback);
 };
 
+// Deletes a single of a user's games based on the ID
 GameSchema.statics.deleteByName = (ownerId, gameId, callback) => {
   const gameToRemove = {
     owner: ownerId,

@@ -1,7 +1,9 @@
+// Appends error message to element
 const handleError = (message) => {
   $("#errorMessage").text(message);
 }
 
+// Sends ajax request
 const sendAjax = (action, data) => {
   $.ajax({
     cache: false,
@@ -20,6 +22,7 @@ const sendAjax = (action, data) => {
   });        
 }
 
+// Prepares main login page
 $(document).ready(() => {
   $("#signupForm").on("submit", (e) => {
     e.preventDefault();

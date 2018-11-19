@@ -1,3 +1,4 @@
+// Sends ajax request when logging in
 const handleLogin = (e) => {
   e.preventDefault();
 
@@ -11,6 +12,7 @@ const handleLogin = (e) => {
   return false;
 };
 
+// Sends ajax request when signing up
 const handleSignup = (e) => {
   e.preventDefault();
 
@@ -29,6 +31,7 @@ const handleSignup = (e) => {
   return false;
 };
 
+// Window for logging in
 const LoginWindow = (props) => {
   return (
   <div className = 'LoginWindow'>
@@ -50,6 +53,7 @@ const LoginWindow = (props) => {
   );
 };
 
+// Window for signing up
 const SignupWindow = (props) => {
   return (
   <div className = 'SignupWindow'>
@@ -73,6 +77,7 @@ const SignupWindow = (props) => {
   );
 };
 
+// Renders login window
 const createLoginWindow = (csrf) => {
   ReactDOM.render(
     <LoginWindow csrf={csrf} />,
@@ -80,6 +85,7 @@ const createLoginWindow = (csrf) => {
   );
 };
 
+// Renders signup window
 const createSignupWindow = (csrf) => {
   ReactDOM.render(
     <SignupWindow csrf={csrf} />,
@@ -87,10 +93,12 @@ const createSignupWindow = (csrf) => {
   );
 };
 
+// Page setup
 const setup = (csrf) => {
   const loginButton = document.querySelector("#loginButton");
   const signupButton = document.querySelector("#signupButton");
 
+  // Event listner hookups
   signupButton.addEventListener("click", (e) => {
     e.preventDefault();
     createSignupWindow(csrf);
@@ -106,12 +114,14 @@ const setup = (csrf) => {
   createLoginWindow(csrf); // default
 };
 
+// Get CSRF token
 const getToken = () => {
   sendAjax('GET', '/getToken', null, (result) => {
     setup(result.csrfToken);
   });
 };
 
+// Ready
 $(document).ready(function() {
   getToken();
 });

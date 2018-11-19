@@ -1,3 +1,6 @@
+/* Form for adding a game to the collection from the search screen.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
 const AddForm = (props) => {
   return (
     <form id="addForm"
@@ -18,6 +21,9 @@ const AddForm = (props) => {
   );
 };
 
+/* Form for removing a game to the collection from the search or list screens.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
 const RemoveForm = (props) => {
   return (
     <form id="removeForm"

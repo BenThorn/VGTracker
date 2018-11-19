@@ -13,6 +13,7 @@ const handleAdd = (e) => {
   return false;
 };
 
+// Sends game ID to the API for it to be removed from the database
 const handleRemove = (e, page) => {
   e.preventDefault();
 
@@ -28,6 +29,7 @@ const handleRemove = (e, page) => {
   return false;
 };
 
+// Sends search info to the API, to be called by the external API
 const handleSearch = (e) => {
   e.preventDefault();
 
@@ -39,7 +41,6 @@ const handleSearch = (e) => {
   $("#searchResults").text("Searching...");
 
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), (data) => {
-    console.log(data);
     loadSearchResults(data);
   });
 };
@@ -60,12 +61,11 @@ const handleSendGame = (e) => {
   handleAdd(e);
 };
 
+// Called when sending the data from the result or game node to the hidden remove form
 const handleRemoveGame = (e) => {
   e.preventDefault();
 
   const form = e.target;
-
-  console.log(form.className);
 
   if(form.className === 'gameNodeForm') {
     $("#gameIdRemove").val(form.gameId.value.toString());
@@ -76,8 +76,8 @@ const handleRemoveGame = (e) => {
   handleRemove(e, form.className);
 };
 
+// Called when sending the user's credentials and new password to the API
 const handleChangePassword = (e) => {
-  console.log('change password');
 
   e.preventDefault();
 

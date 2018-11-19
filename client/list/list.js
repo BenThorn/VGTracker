@@ -1,7 +1,10 @@
+// Component to render tot the body
 class App extends React.Component {
   constructor(props){
     super(props);
   }
+
+  // Creates five divs to contain the list, and the title of the list and the list itself
   render() {
     return(
       <div className='App'>
@@ -41,6 +44,7 @@ class App extends React.Component {
   }
 };
 
+// The list of the user's games
 const GameList = function(props) {
   if(props.games.length === 0) {
     return (
@@ -73,6 +77,7 @@ const GameList = function(props) {
 
 };
 
+// Page setup
 const setup = function(csrf) {
   ReactDOM.render(
     <App csrf={csrf} />, document.querySelector("#content")
@@ -81,6 +86,7 @@ const setup = function(csrf) {
   loadGamesFromServer();
 };
 
+// Loads the games from the server, then checks through the list to separate the categories
 const loadGamesFromServer = () => {
   sendAjax('GET', '/getGames', null, (data) => {
     const categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
@@ -94,6 +100,8 @@ const loadGamesFromServer = () => {
 };
 
 const createGameNode = (game, currentCategory) => {
+  // To separate the user's games into the five categories, it only returns an element if the category matches 
+  // the current category
   if (game.category === currentCategory) {
     let year;
     // Check if the date wasn't available from the API
@@ -123,12 +131,14 @@ const createGameNode = (game, currentCategory) => {
   }
 };
 
+// Get CSRF token
 const getToken = () => {
   sendAjax('GET', '/getToken', null, (result) => {
     setup(result.csrfToken);
   });
 };
 
+// Ready
 $(document).ready(function() {
   getToken();
 });

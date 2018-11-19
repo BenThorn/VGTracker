@@ -1,3 +1,4 @@
+// Component for the searchbar at the top of the page
 const SearchForm = (props) => {
   return (
     <form id="searchForm"
@@ -14,10 +15,14 @@ const SearchForm = (props) => {
   );
 };
 
+/*Maps the search results into form elements
+Checks if the game is already present in the collection,
+and changes the submit button to add or delete*/
 const SearchResults = (props) => {
   let submitValue = "Add Game";
   let submitMethod = handleSendGame;
 
+  // If search returns empty
   if(props.results.length === 0) {
     return (
       <div className="gameList">
@@ -65,7 +70,8 @@ const SearchResults = (props) => {
       </form>
     );
   });
-
+// Stores the initial results in the wrapper div so it can be reloaded 
+// without calling search again.
   return (
     <div className="resultList" 
     data-results={JSON.stringify(props.results)}>
@@ -90,6 +96,7 @@ const formatDate = (date, futureDate, needsNum) => {
 
 };
 
+// Adds options to the form's dropdown menu for platforms
 const populateDropdown = (platforms) => {
   // Some games, for some reason, have no platform listed, so we need to check for that.
   if(platforms) {

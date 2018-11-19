@@ -2,20 +2,18 @@ const models = require('../models');
 
 const Account = models.Account;
 
+// Renders login page
 const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
-// const signupPage = (req, res) => {
-//   debugger;
-//   res.render('signup', { csrfToken: req.csrfToken() });
-// };
-
+// Destroys session and redirects to login page
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+// Login request to the database. Authenicates user and returns error if credentials are wrong
 const login = (request, response) => {
   const req = request;
   const res = response;
@@ -38,6 +36,8 @@ const login = (request, response) => {
   });
 };
 
+// Signup request to the database. Creates a user with a password,
+// sends error if username is taken
 const signup = (request, response) => {
   const req = request;
   const res = response;
@@ -82,6 +82,7 @@ const signup = (request, response) => {
   });
 };
 
+// ChangePassword request to API. Returns error if the user credentials are wrong
 const changePass = (request, response) => {
   const req = request;
   const res = response;
@@ -99,6 +100,7 @@ const changePass = (request, response) => {
   });
 };
 
+// Get Csrf token
 const getToken = (request, response) => {
   const req = request;
   const res = response;
