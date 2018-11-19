@@ -8,6 +8,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// Component to render tot the body
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
 
@@ -16,6 +17,9 @@ var App = function (_React$Component) {
 
     return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
   }
+
+  // Creates five divs to contain the list, and the title of the list and the list itself
+
 
   _createClass(App, [{
     key: "render",
@@ -91,6 +95,7 @@ var App = function (_React$Component) {
 
 ;
 
+// The list of the user's games
 var GameList = function GameList(props) {
   if (props.games.length === 0) {
     return React.createElement("div", { className: "gameList" });
@@ -122,12 +127,14 @@ var GameList = function GameList(props) {
   }
 };
 
+// Page setup
 var setup = function setup(csrf) {
   ReactDOM.render(React.createElement(App, { csrf: csrf }), document.querySelector("#content"));
 
   loadGamesFromServer();
 };
 
+// Loads the games from the server, then checks through the list to separate the categories
 var loadGamesFromServer = function loadGamesFromServer() {
   sendAjax('GET', '/getGames', null, function (data) {
     var categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
@@ -139,6 +146,8 @@ var loadGamesFromServer = function loadGamesFromServer() {
 };
 
 var createGameNode = function createGameNode(game, currentCategory) {
+  // To separate the user's games into the five categories, it only returns an element if the category matches 
+  // the current category
   if (game.category === currentCategory) {
     var year = void 0;
     // Check if the date wasn't available from the API
@@ -188,17 +197,22 @@ var createGameNode = function createGameNode(game, currentCategory) {
   }
 };
 
+// Get CSRF token
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
     setup(result.csrfToken);
   });
 };
 
+// Ready
 $(document).ready(function () {
   getToken();
 });
 "use strict";
 
+/* Form for adding a game to the collection from the search screen.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
 var AddForm = function AddForm(props) {
   return React.createElement(
     "form",
@@ -219,6 +233,9 @@ var AddForm = function AddForm(props) {
   );
 };
 
+/* Form for removing a game to the collection from the search or list screens.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
 var RemoveForm = function RemoveForm(props) {
   return React.createElement(
     "form",
@@ -251,6 +268,7 @@ var handleAdd = function handleAdd(e) {
   return false;
 };
 
+// Sends game ID to the API for it to be removed from the database
 var handleRemove = function handleRemove(e, page) {
   e.preventDefault();
 
@@ -266,6 +284,7 @@ var handleRemove = function handleRemove(e, page) {
   return false;
 };
 
+// Sends search info to the API, to be called by the external API
 var handleSearch = function handleSearch(e) {
   e.preventDefault();
 
@@ -277,7 +296,6 @@ var handleSearch = function handleSearch(e) {
   $("#searchResults").text("Searching...");
 
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
-    console.log(data);
     loadSearchResults(data);
   });
 };
@@ -297,12 +315,11 @@ var handleSendGame = function handleSendGame(e) {
   handleAdd(e);
 };
 
+// Called when sending the data from the result or game node to the hidden remove form
 var handleRemoveGame = function handleRemoveGame(e) {
   e.preventDefault();
 
   var form = e.target;
-
-  console.log(form.className);
 
   if (form.className === 'gameNodeForm') {
     $("#gameIdRemove").val(form.gameId.value.toString());
@@ -313,8 +330,8 @@ var handleRemoveGame = function handleRemoveGame(e) {
   handleRemove(e, form.className);
 };
 
+// Called when sending the user's credentials and new password to the API
 var handleChangePassword = function handleChangePassword(e) {
-  console.log('change password');
 
   e.preventDefault();
 
@@ -334,14 +351,17 @@ var handleChangePassword = function handleChangePassword(e) {
 };
 "use strict";
 
+// A simple browser alert when an error occurs
 var handleError = function handleError(message) {
   alert(message);
 };
 
+// Redirects the window to the designated url
 var redirect = function redirect(response) {
   window.location = response.redirect;
 };
 
+// Sends ajax request
 var sendAjax = function sendAjax(type, action, data, success) {
   $.ajax({
     cache: false,

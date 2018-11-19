@@ -8,6 +8,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// Class component to be rendered to the body
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
 
@@ -36,6 +37,7 @@ var App = function (_React$Component) {
 
 ;
 
+// Calls the external API and gets the search results data back
 var loadSearchResults = function loadSearchResults(data) {
   // Callback so it has time to load the user's games
   getUserGames(function (userGames) {
@@ -48,23 +50,25 @@ var getUserGames = function getUserGames(callback) {
   sendAjax('GET', '/getGames', null, callback);
 };
 
+// Setup page
 var setup = function setup(csrf) {
   ReactDOM.render(React.createElement(App, { csrf: csrf }), document.querySelector("#content"));
-
-  // loadGamesFromServer();
 };
 
+// Get CSRF token
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
     setup(result.csrfToken);
   });
 };
 
+// Ready
 $(document).ready(function () {
   getToken();
 });
 "use strict";
 
+// Component for the searchbar at the top of the page
 var SearchForm = function SearchForm(props) {
   return React.createElement(
     "form",
@@ -81,10 +85,14 @@ var SearchForm = function SearchForm(props) {
   );
 };
 
+/*Maps the search results into form elements
+Checks if the game is already present in the collection,
+and changes the submit button to add or delete*/
 var SearchResults = function SearchResults(props) {
   var submitValue = "Add Game";
   var submitMethod = handleSendGame;
 
+  // If search returns empty
   if (props.results.length === 0) {
     return React.createElement(
       "div",
@@ -172,7 +180,8 @@ var SearchResults = function SearchResults(props) {
       )
     );
   });
-
+  // Stores the initial results in the wrapper div so it can be reloaded 
+  // without calling search again.
   return React.createElement(
     "div",
     { className: "resultList",
@@ -196,6 +205,7 @@ var formatDate = function formatDate(date, futureDate, needsNum) {
   }
 };
 
+// Adds options to the form's dropdown menu for platforms
 var populateDropdown = function populateDropdown(platforms) {
   // Some games, for some reason, have no platform listed, so we need to check for that.
   if (platforms) {
@@ -230,6 +240,9 @@ var populateDropdown = function populateDropdown(platforms) {
 };
 "use strict";
 
+/* Form for adding a game to the collection from the search screen.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
 var AddForm = function AddForm(props) {
   return React.createElement(
     "form",
@@ -250,6 +263,9 @@ var AddForm = function AddForm(props) {
   );
 };
 
+/* Form for removing a game to the collection from the search or list screens.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
 var RemoveForm = function RemoveForm(props) {
   return React.createElement(
     "form",
@@ -282,6 +298,7 @@ var handleAdd = function handleAdd(e) {
   return false;
 };
 
+// Sends game ID to the API for it to be removed from the database
 var handleRemove = function handleRemove(e, page) {
   e.preventDefault();
 
@@ -297,6 +314,7 @@ var handleRemove = function handleRemove(e, page) {
   return false;
 };
 
+// Sends search info to the API, to be called by the external API
 var handleSearch = function handleSearch(e) {
   e.preventDefault();
 
@@ -308,7 +326,6 @@ var handleSearch = function handleSearch(e) {
   $("#searchResults").text("Searching...");
 
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
-    console.log(data);
     loadSearchResults(data);
   });
 };
@@ -328,12 +345,11 @@ var handleSendGame = function handleSendGame(e) {
   handleAdd(e);
 };
 
+// Called when sending the data from the result or game node to the hidden remove form
 var handleRemoveGame = function handleRemoveGame(e) {
   e.preventDefault();
 
   var form = e.target;
-
-  console.log(form.className);
 
   if (form.className === 'gameNodeForm') {
     $("#gameIdRemove").val(form.gameId.value.toString());
@@ -344,8 +360,8 @@ var handleRemoveGame = function handleRemoveGame(e) {
   handleRemove(e, form.className);
 };
 
+// Called when sending the user's credentials and new password to the API
 var handleChangePassword = function handleChangePassword(e) {
-  console.log('change password');
 
   e.preventDefault();
 
@@ -365,14 +381,17 @@ var handleChangePassword = function handleChangePassword(e) {
 };
 "use strict";
 
+// A simple browser alert when an error occurs
 var handleError = function handleError(message) {
   alert(message);
 };
 
+// Redirects the window to the designated url
 var redirect = function redirect(response) {
   window.location = response.redirect;
 };
 
+// Sends ajax request
 var sendAjax = function sendAjax(type, action, data, success) {
   $.ajax({
     cache: false,

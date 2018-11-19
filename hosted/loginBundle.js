@@ -1,5 +1,6 @@
 "use strict";
 
+// Sends ajax request when logging in
 var handleLogin = function handleLogin(e) {
   e.preventDefault();
 
@@ -13,6 +14,7 @@ var handleLogin = function handleLogin(e) {
   return false;
 };
 
+// Sends ajax request when signing up
 var handleSignup = function handleSignup(e) {
   e.preventDefault();
 
@@ -31,6 +33,7 @@ var handleSignup = function handleSignup(e) {
   return false;
 };
 
+// Window for logging in
 var LoginWindow = function LoginWindow(props) {
   return React.createElement(
     "div",
@@ -66,6 +69,7 @@ var LoginWindow = function LoginWindow(props) {
   );
 };
 
+// Window for signing up
 var SignupWindow = function SignupWindow(props) {
   return React.createElement(
     "div",
@@ -103,18 +107,22 @@ var SignupWindow = function SignupWindow(props) {
   );
 };
 
+// Renders login window
 var createLoginWindow = function createLoginWindow(csrf) {
   ReactDOM.render(React.createElement(LoginWindow, { csrf: csrf }), document.querySelector("#content"));
 };
 
+// Renders signup window
 var createSignupWindow = function createSignupWindow(csrf) {
   ReactDOM.render(React.createElement(SignupWindow, { csrf: csrf }), document.querySelector("#content"));
 };
 
+// Page setup
 var setup = function setup(csrf) {
   var loginButton = document.querySelector("#loginButton");
   var signupButton = document.querySelector("#signupButton");
 
+  // Event listner hookups
   signupButton.addEventListener("click", function (e) {
     e.preventDefault();
     createSignupWindow(csrf);
@@ -130,17 +138,22 @@ var setup = function setup(csrf) {
   createLoginWindow(csrf); // default
 };
 
+// Get CSRF token
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
     setup(result.csrfToken);
   });
 };
 
+// Ready
 $(document).ready(function () {
   getToken();
 });
 "use strict";
 
+/* Form for adding a game to the collection from the search screen.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
 var AddForm = function AddForm(props) {
   return React.createElement(
     "form",
@@ -161,6 +174,9 @@ var AddForm = function AddForm(props) {
   );
 };
 
+/* Form for removing a game to the collection from the search or list screens.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
 var RemoveForm = function RemoveForm(props) {
   return React.createElement(
     "form",
@@ -193,6 +209,7 @@ var handleAdd = function handleAdd(e) {
   return false;
 };
 
+// Sends game ID to the API for it to be removed from the database
 var handleRemove = function handleRemove(e, page) {
   e.preventDefault();
 
@@ -208,6 +225,7 @@ var handleRemove = function handleRemove(e, page) {
   return false;
 };
 
+// Sends search info to the API, to be called by the external API
 var handleSearch = function handleSearch(e) {
   e.preventDefault();
 
@@ -219,7 +237,6 @@ var handleSearch = function handleSearch(e) {
   $("#searchResults").text("Searching...");
 
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
-    console.log(data);
     loadSearchResults(data);
   });
 };
@@ -239,12 +256,11 @@ var handleSendGame = function handleSendGame(e) {
   handleAdd(e);
 };
 
+// Called when sending the data from the result or game node to the hidden remove form
 var handleRemoveGame = function handleRemoveGame(e) {
   e.preventDefault();
 
   var form = e.target;
-
-  console.log(form.className);
 
   if (form.className === 'gameNodeForm') {
     $("#gameIdRemove").val(form.gameId.value.toString());
@@ -255,8 +271,8 @@ var handleRemoveGame = function handleRemoveGame(e) {
   handleRemove(e, form.className);
 };
 
+// Called when sending the user's credentials and new password to the API
 var handleChangePassword = function handleChangePassword(e) {
-  console.log('change password');
 
   e.preventDefault();
 
@@ -276,14 +292,17 @@ var handleChangePassword = function handleChangePassword(e) {
 };
 "use strict";
 
+// A simple browser alert when an error occurs
 var handleError = function handleError(message) {
   alert(message);
 };
 
+// Redirects the window to the designated url
 var redirect = function redirect(response) {
   window.location = response.redirect;
 };
 
+// Sends ajax request
 var sendAjax = function sendAjax(type, action, data, success) {
   $.ajax({
     cache: false,
