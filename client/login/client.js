@@ -35,7 +35,6 @@ const handleSignup = (e) => {
 const LoginWindow = (props) => {
   return (
   <div className = 'LoginWindow'>
-    <div id="welcome">Welcome to VGTracker! Please login, or sign up if you don't have an account.</div>
     <form id="loginForm" name="loginForm"
       onSubmit={handleLogin}
       action="/login"
