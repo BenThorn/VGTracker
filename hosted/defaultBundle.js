@@ -52,21 +52,30 @@ var HomeButtons = function HomeButtons(props) {
       "div",
       null,
       React.createElement(
-        "button",
-        null,
+        "a",
+        { href: "/addPage" },
         React.createElement(
-          "a",
-          { href: "/addPage" },
+          "button",
+          null,
           "Search and Add Games"
         )
       ),
       React.createElement(
-        "button",
-        null,
+        "a",
+        { href: "/list" },
         React.createElement(
-          "a",
-          { href: "/list" },
+          "button",
+          null,
           "View your Collection"
+        )
+      ),
+      React.createElement(
+        "a",
+        { href: "/log" },
+        React.createElement(
+          "button",
+          null,
+          "Log your game time"
         )
       )
     ),
@@ -310,6 +319,17 @@ var sendAjax = function sendAjax(type, action, data, success) {
     error: function error(xhr, status, _error) {
       var messageObj = JSON.parse(xhr.responseText);
       handleError(messageObj.error);
+    }
+  });
+};
+'use strict';
+
+var loadGamesFromServer = function loadGamesFromServer() {
+  sendAjax('GET', '/getGames', null, function (data) {
+    var categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
+
+    for (var i = 0; i < categories.length; i++) {
+      ReactDOM.render(React.createElement(GameList, { games: data.games, currentCategory: categories[i] }), document.querySelector('.' + categories[i] + 'List'));
     }
   });
 };

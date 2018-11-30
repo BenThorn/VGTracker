@@ -39,11 +39,6 @@ var LoginWindow = function LoginWindow(props) {
     "div",
     { className: "LoginWindow" },
     React.createElement(
-      "div",
-      { id: "welcome" },
-      "Welcome to VGTracker! Please login, or sign up if you don't have an account."
-    ),
-    React.createElement(
       "form",
       { id: "loginForm", name: "loginForm",
         onSubmit: handleLogin,
@@ -314,6 +309,17 @@ var sendAjax = function sendAjax(type, action, data, success) {
     error: function error(xhr, status, _error) {
       var messageObj = JSON.parse(xhr.responseText);
       handleError(messageObj.error);
+    }
+  });
+};
+'use strict';
+
+var loadGamesFromServer = function loadGamesFromServer() {
+  sendAjax('GET', '/getGames', null, function (data) {
+    var categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
+
+    for (var i = 0; i < categories.length; i++) {
+      ReactDOM.render(React.createElement(GameList, { games: data.games, currentCategory: categories[i] }), document.querySelector('.' + categories[i] + 'List'));
     }
   });
 };

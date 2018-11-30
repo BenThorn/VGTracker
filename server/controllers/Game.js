@@ -22,6 +22,8 @@ const defaultPage = (req, res) => res.render('default', { csrfToken: req.csrfTok
 // Hooks up url to the list view
 const listPage = (req, res) => res.render('list', { csrfToken: req.csrfToken() });
 
+const logPage = (req, res) => res.render('log', { csrfToken: req.csrfToken() });
+
 // Add game request to the database.
 const addGame = (req, res) => {
   if (!req.body.name || !req.body.year) {
@@ -107,4 +109,5 @@ module.exports.removeGame = removeGame;
 module.exports.searchGames = searchGames;
 module.exports.defaultPage = defaultPage;
 module.exports.listPage = listPage;
+module.exports.logPage = logPage;
 module.exports.add = addGame;

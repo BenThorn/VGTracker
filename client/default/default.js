@@ -20,8 +20,9 @@ const HomeButtons = (props) => {
   return(
     <div className="homeButtons">
       <div>
-        <button><a href="/addPage">Search and Add Games</a></button>
-        <button><a href="/list">View your Collection</a></button>
+        <a href="/addPage"><button>Search and Add Games</button></a>
+        <a href="/list"><button>View your Collection</button></a>
+        <a href="/log"><button>Log your game time</button></a>
       </div>
       <button id="changePassButton">Change your password</button>
     </div>
