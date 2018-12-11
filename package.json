@@ -15,11 +15,11 @@
     "watchAppBundle": "babel --watch ./client/app ./client/helper --presets react --out-file ./hosted/bundle.js",
     "watchDefaultBundle": "babel --watch ./client/default ./client/helper --presets react --out-file ./hosted/defaultBundle.js",
     "watchListBundle": "babel --watch ./client/list ./client/helper --presets react --out-file ./hosted/listBundle.js",
-    "watchListBundle": "babel --watch ./client/log ./client/helper --presets react --out-file ./hosted/logBundle.js",
+    "watchLogBundle": "babel --watch ./client/log ./client/helper --presets react --out-file ./hosted/logBundle.js",
     "nodemon": "nodemon --watch ./server ./server/app.js",
     "sass": "sass --watch ./views/sass/styles.scss ./hosted/style.css",
     "start": "node ./server/app.js",
-    "dev": "concurrently --kill-others-on-fail \"npm run sass\" \"npm run watchDefaultBundle \" \"npm run watchLoginBundle\" \"npm run watchAppBundle \" \"npm run watchListBundle \" \"npm run nodemon \"",
+    "dev": "concurrently --kill-others-on-fail \"npm run sass\" \"npm run watchDefaultBundle \" \"npm run watchLoginBundle\" \"npm run watchAppBundle \" \"npm run watchListBundle \" \"npm run watchLogBundle \" \"npm run nodemon \"",
     "pretest": "eslint ./server --fix",
     "test": "echo \"Tests complete\""
   },

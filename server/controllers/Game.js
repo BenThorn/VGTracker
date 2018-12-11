@@ -37,6 +37,7 @@ const addGame = (req, res) => {
     platform: req.body.platform,
     category: req.body.category,
     owner: req.session.account._id,
+    picUrl: req.body.picUrl,
   };
 
   const newGame = new Game.GameModel(gameData);
@@ -86,6 +87,36 @@ const removeGame = (request, response) => {
   });
 };
 
+// Database request to update a single game, checking for the existence of various params
+const updateGame = (request, response) => {
+  const req = request;
+  const res = response;
+
+  console.log(req.body);
+
+  const params = {
+    category: req.body.category,
+  };
+
+  if (req.body.lastPlayed !== '') {
+    params.lastPlayed = req.body.lastPlayed;
+  }
+
+  if (req.body.playTime !== '') {
+    params.playTime = req.body.playTime;
+  }
+
+  console.log(params);
+
+  return Game.GameModel.updateByName(req.session.account._id, req.body.gameId, params, (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+    return res.json({ message: 'Updated game' });
+  });
+};
+
 // Makes call to external API
 const searchGames = (request, response) => {
   const req = request;
@@ -108,6 +139,7 @@ module.exports.getGames = getGames;
 module.exports.removeGame = removeGame;
 module.exports.searchGames = searchGames;
 module.exports.defaultPage = defaultPage;
+module.exports.updateGame = updateGame;
 module.exports.listPage = listPage;
 module.exports.logPage = logPage;
 module.exports.add = addGame;

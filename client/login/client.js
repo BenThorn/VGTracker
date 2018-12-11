@@ -3,7 +3,7 @@ const handleLogin = (e) => {
   e.preventDefault();
 
   if($("#user").val() == '' || $("#pass").val() == '') {
-    handleError("RAWR! Username or password is empty");
+    handleError("Please enter all fields");
     return false;
   }
 
@@ -35,6 +35,11 @@ const handleSignup = (e) => {
 const LoginWindow = (props) => {
   return (
   <div className = 'LoginWindow'>
+    <div id="welcome">
+      <p>Welcome to VGTracker!</p> 
+      <p>Log in, or sign up if you don't have an account.</p>
+      <p>VGTracker lets you search for, categorize, and track your time playing games. Use the log timer when you boot up a game!</p>
+    </div>
     <form id="loginForm" name="loginForm"
       onSubmit={handleLogin}
       action="/login"
@@ -45,6 +50,7 @@ const LoginWindow = (props) => {
       <input id="user" type="text" name="username" placeholder="username"/>
       <label htmlFor="pass">Password: </label>
       <input id="pass" type="password" name="pass" placeholder="password"/>
+      <div id="error"></div>
       <input type="hidden" name="_csrf" value={props.csrf}/>
       <input className="formSubmit" type="submit" value="Sign in" />
     </form>
@@ -70,6 +76,7 @@ const SignupWindow = (props) => {
       <label htmlFor="pass2">Password: </label>
       <input id="pass2" type="password" name="pass2" placeholder="retype password"/>
       <input type="hidden" name="_csrf" value={props.csrf}/>
+      <div id="error"></div>
       <input className="formSubmit" type="submit" value="Sign up" />
     </form>
   </div>

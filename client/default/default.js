@@ -7,7 +7,6 @@ class App extends React.Component {
     return(
       <div className='App'>
         <div id="default">
-          <h3>Welcome to VGTracker!</h3>
           <HomeButtons />
         </div>
       </div>
@@ -20,9 +19,9 @@ const HomeButtons = (props) => {
   return(
     <div className="homeButtons">
       <div>
-        <a href="/addPage"><button>Search and Add Games</button></a>
-        <a href="/list"><button>View your Collection</button></a>
-        <a href="/log"><button>Log your game time</button></a>
+        <a href="/addPage"><button>Search</button></a>
+        <a href="/list"><button>View</button></a>
+        <a href="/log"><button>Log</button></a>
       </div>
       <button id="changePassButton">Change your password</button>
     </div>
@@ -42,11 +41,12 @@ const ChangePassWindow = (props) => {
     >
       <label htmlFor="username">Username: </label>
       <input id="user" type="text" name="username"/>
-      <label htmlFor="pass"> Old Password: </label>
+      <label htmlFor="pass"> Old: </label>
       <input id="oldPass" type="password" name="oldPass" />
-      <label htmlFor="pass2"> New Password: </label>
+      <label htmlFor="pass2"> New: </label>
       <input id="newPass" type="password" name="newPass" />
       <input type="hidden" name="_csrf" value={props.csrf}/>
+      <div id="error"></div>
       <input className="formSubmit" type="submit" value="Change password" />
     </form>
   </div>

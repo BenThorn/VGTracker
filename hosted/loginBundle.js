@@ -5,7 +5,7 @@ var handleLogin = function handleLogin(e) {
   e.preventDefault();
 
   if ($("#user").val() == '' || $("#pass").val() == '') {
-    handleError("RAWR! Username or password is empty");
+    handleError("Please enter all fields");
     return false;
   }
 
@@ -39,6 +39,25 @@ var LoginWindow = function LoginWindow(props) {
     "div",
     { className: "LoginWindow" },
     React.createElement(
+      "div",
+      { id: "welcome" },
+      React.createElement(
+        "p",
+        null,
+        "Welcome to VGTracker!"
+      ),
+      React.createElement(
+        "p",
+        null,
+        "Log in, or sign up if you don't have an account."
+      ),
+      React.createElement(
+        "p",
+        null,
+        "VGTracker lets you search for, categorize, and track your time playing games. Use the log timer when you boot up a game!"
+      )
+    ),
+    React.createElement(
       "form",
       { id: "loginForm", name: "loginForm",
         onSubmit: handleLogin,
@@ -58,6 +77,7 @@ var LoginWindow = function LoginWindow(props) {
         "Password: "
       ),
       React.createElement("input", { id: "pass", type: "password", name: "pass", placeholder: "password" }),
+      React.createElement("div", { id: "error" }),
       React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
       React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign in" })
     )
@@ -97,6 +117,7 @@ var SignupWindow = function SignupWindow(props) {
       ),
       React.createElement("input", { id: "pass2", type: "password", name: "pass2", placeholder: "retype password" }),
       React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+      React.createElement("div", { id: "error" }),
       React.createElement("input", { className: "formSubmit", type: "submit", value: "Sign up" })
     )
   );
@@ -164,6 +185,7 @@ var AddForm = function AddForm(props) {
     React.createElement("input", { id: "gameId", type: "text", name: "gameId", value: "" }),
     React.createElement("input", { id: "gamePlatform", type: "text", name: "platform", value: "" }),
     React.createElement("input", { id: "gameCategory", type: "text", name: "category", value: "" }),
+    React.createElement("input", { id: "gamePicUrl", type: "text", name: "picUrl", value: "" }),
     React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
     React.createElement("input", { className: "addGameSubmit", type: "submit", value: "Add Game" })
   );
@@ -187,6 +209,62 @@ var RemoveForm = function RemoveForm(props) {
     React.createElement("input", { className: "removeGameSubmit", type: "submit", value: "Remove Game" })
   );
 };
+
+/* Form for sending the options to update an existing game to the api.
+  Hidden using CSS, so the user won't see it.
+*/
+var EditGameForm = function EditGameForm(props) {
+  return React.createElement(
+    "form",
+    { id: "editGameForm",
+      onSubmit: handleEdit,
+      name: "editForm",
+      action: "/edit",
+      method: "POST",
+      className: "editGameForm"
+    },
+    React.createElement("input", { id: "gameIdEdit", type: "text", name: "gameId", value: "" }),
+    React.createElement("input", { id: "categoryEdit", type: "text", name: "category", value: "" }),
+    React.createElement("input", { id: "lastPlayedEdit", type: "text", name: "lastPlayed", value: "" }),
+    React.createElement("input", { id: "playTimeEdit", type: "text", name: "playTime", value: "" }),
+    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+    React.createElement("input", { className: "editGameSubmit", type: "submit", value: "Edit Game" })
+  );
+};
+
+// Adds options to the form's dropdown menu for platforms
+var populateDropdown = function populateDropdown(platforms) {
+  // Some games, for some reason, have no platform listed, so we need to check for that.
+  if (platforms) {
+    var options = [];
+
+    for (var i = 0; i < platforms.length; i++) {
+      options.push(React.createElement(
+        "option",
+        { value: platforms[i].name },
+        platforms[i].name
+      ));
+    }
+
+    var dropDown = React.createElement(
+      "select",
+      { id: "resultPlatforms" },
+      options
+    );
+
+    return dropDown;
+  } else {
+    return React.createElement(
+      "select",
+      { id: "resultPlatforms" },
+      React.createElement(
+        "option",
+        { value: "N/A" },
+        "No system listed"
+      )
+    );
+  }
+};
 "use strict";
 
 // Sends game info to the API to be sent to the database
@@ -207,8 +285,8 @@ var handleAdd = function handleAdd(e) {
 // Sends game ID to the API for it to be removed from the database
 var handleRemove = function handleRemove(e, page) {
   e.preventDefault();
-
   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function () {
+
     // Differentiate between removing from the search page or the list page
     if (page === 'result') {
       loadSearchResults($(".resultList").data('results'));
@@ -220,16 +298,36 @@ var handleRemove = function handleRemove(e, page) {
   return false;
 };
 
+// Sends game ID and options to be changed or added to the API
+var handleEdit = function handleEdit(e) {
+  e.preventDefault();
+  sendAjax('POST', $("#editGameForm").attr("action"), $("#editGameForm").serialize(), function () {
+    console.log('success');
+    loadGamesFromServer();
+  });
+
+  return false;
+};
+
+// Similar to edit, but specifically for sending update time parameters
+var handleUpdateTime = function handleUpdateTime() {
+  sendAjax('POST', $("#editGameForm").attr("action"), $("#editGameForm").serialize(), function () {
+    console.log('success');
+    loadGamesFromServer();
+  });
+
+  return false;
+};
+
 // Sends search info to the API, to be called by the external API
 var handleSearch = function handleSearch(e) {
   e.preventDefault();
 
-  if ($("#searchTerm").val() === '') {
-    handleError("Please fill in a search term.");
-    return false;
-  }
-
-  $("#searchResults").text("Searching...");
+  var searching = document.createElement('p');
+  $(searching).text('Searching...');
+  searching.id = 'searching';
+  $("#searchResults").empty();
+  $("#searchResults").append(searching);
 
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
     loadSearchResults(data);
@@ -247,6 +345,7 @@ var handleSendGame = function handleSendGame(e) {
   $("#gameId").val(form.resultGameId.value.toString());
   $("#gamePlatform").val(form.resultPlatforms.value);
   $("#gameCategory").val(form.resultCategory.value);
+  $("#gamePicUrl").val(form.resultPicVal.value);
 
   handleAdd(e);
 };
@@ -256,14 +355,36 @@ var handleRemoveGame = function handleRemoveGame(e) {
   e.preventDefault();
 
   var form = e.target;
-
-  if (form.className === 'gameNodeForm') {
+  if (!form.className) {
+    form = e.target.parentNode; // Workaround for nesting of elements
     $("#gameIdRemove").val(form.gameId.value.toString());
   } else if (form.className === 'result') {
+    form = e.target;
     $("#gameIdRemove").val(form.resultGameId.value.toString());
   }
 
   handleRemove(e, form.className);
+};
+
+// Sets up the hidden form with the parameters to update the game with
+var handleEditGame = function handleEditGame(e) {
+  e.preventDefault();
+  var form = e.target;
+  $("#gameIdEdit").val(form.gameId.value.toString());
+  $("#categoryEdit").val(form.resultCategory.value.toString());
+  $("#lastPlayedEdit").val(form.lastPlayed.value.toString());
+
+  handleEdit(e);
+};
+
+// Sets up the hidden form with the parameters to update the game with
+var handleSendTime = function handleSendTime(options) {
+  $("#gameIdEdit").val(options.gameId);
+  $("#lastPlayedEdit").val(options.lastPlayed);
+  $("#playTimeEdit").val(options.playTime);
+  $("#categoryEdit").val(options.category);
+
+  handleUpdateTime();
 };
 
 // Called when sending the user's credentials and new password to the API
@@ -285,16 +406,35 @@ var handleChangePassword = function handleChangePassword(e) {
 
   return false;
 };
-"use strict";
+'use strict';
 
 // A simple browser alert when an error occurs
 var handleError = function handleError(message) {
-  alert(message);
+  $("#error").text(message);
 };
 
 // Redirects the window to the designated url
 var redirect = function redirect(response) {
   window.location = response.redirect;
+};
+
+// Taken from https://hype.codes/how-get-current-date-javascript
+var getDate = function getDate() {
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1;
+  var yyyy = today.getFullYear();
+
+  if (dd < 10) {
+    dd = '0' + dd;
+  }
+
+  if (mm < 10) {
+    mm = '0' + mm;
+  }
+
+  var date = yyyy + '-' + mm + '-' + dd;
+  return date;
 };
 
 // Sends ajax request
@@ -309,17 +449,6 @@ var sendAjax = function sendAjax(type, action, data, success) {
     error: function error(xhr, status, _error) {
       var messageObj = JSON.parse(xhr.responseText);
       handleError(messageObj.error);
-    }
-  });
-};
-'use strict';
-
-var loadGamesFromServer = function loadGamesFromServer() {
-  sendAjax('GET', '/getGames', null, function (data) {
-    var categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
-
-    for (var i = 0; i < categories.length; i++) {
-      ReactDOM.render(React.createElement(GameList, { games: data.games, currentCategory: categories[i] }), document.querySelector('.' + categories[i] + 'List'));
     }
   });
 };

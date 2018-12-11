@@ -21,6 +21,7 @@ and changes the submit button to add or delete*/
 const SearchResults = (props) => {
   let submitValue = "Add Game";
   let submitMethod = handleSendGame;
+  let backgroundColor;
 
   // If search returns empty
   if(props.results.length === 0) {
@@ -30,14 +31,15 @@ const SearchResults = (props) => {
       </div>
     );
   }
-
   const resultNodes = props.results.map(function(result) {
     for(let i = 0; i < props.userGames.length; i++) {
       if(props.userGames[i].gameId === result.id) {
         submitValue = "Delete Game";
         submitMethod = handleRemoveGame;
+        backgroundColor = {backgroundColor: 'cyan'};
         break;
       } else {
+        backgroundColor = {backgroundColor: 'inherit'}
         submitValue = "Add Game";
         submitMethod = handleSendGame;
       }
@@ -48,6 +50,7 @@ const SearchResults = (props) => {
         onSubmit={submitMethod}
         name={result.name}
         className="result"
+        style={backgroundColor}
       >
         <div id='imgWrapper'>
           <img src={result.image['small_url']} alt='image'/>
@@ -65,6 +68,7 @@ const SearchResults = (props) => {
           </select>
           <input id="resultGameId" type="hidden" name="resultGameId" value={result.id} />
           <input id="resultYearVal" type="hidden" name="resultYearVal" value={formatDate(result.original_release_date, result.expected_release_year, true)} />
+          <input id="resultPicVal" type="hidden" name="resultPicVal" value={result.image['small_url']} />
           <input id="resultSubmit" type="submit" value={submitValue} />
         </div>
       </form>
@@ -75,6 +79,7 @@ const SearchResults = (props) => {
   return (
     <div className="resultList" 
     data-results={JSON.stringify(props.results)}>
+    <h3>Search Results</h3>
       {resultNodes}
     </div>
   );
@@ -93,28 +98,6 @@ const formatDate = (date, futureDate, needsNum) => {
   } else if (!date && !futureDate && needsNum) {
     return 0;
   }
-
 };
 
-// Adds options to the form's dropdown menu for platforms
-const populateDropdown = (platforms) => {
-  // Some games, for some reason, have no platform listed, so we need to check for that.
-  if(platforms) {
-    let options = [];
 
-    for (let i = 0; i < platforms.length; i++) {
-      options.push(
-        <option value={platforms[i].name}>{platforms[i].name}</option>
-      )
-    }
-  
-    const dropDown = <select id="resultPlatforms">{options}</select>;
-  
-    return dropDown;
-  } else {
-    return (
-    <select id="resultPlatforms">
-      <option value="N/A">No system listed</option>
-    </select>);
-  }
-};

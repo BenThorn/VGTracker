@@ -1,76 +1,113 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500");
+@import url("https://fonts.googleapis.com/css?family=Poppins");
 body {
   margin: 0 auto;
   min-width: 1000px;
   overflow: scroll;
   background-color: lightcyan;
   font-family: "Roboto", sans-serif;
+  color: #5c5c5c;
 }
 
 nav {
   background-color: darkcyan;
+  height: 45px;
 }
 nav ul {
+  font-family: "Poppins", sans-serif;
   text-align: center;
   list-style-type: none;
-  max-width: 820px;
+  max-width: 870px;
   margin: 0 auto;
   padding: 0;
 }
 nav li {
-  padding: 10px 35px 10px 35px;
+  padding: 7px 35px 10px 35px;
   min-width: 20px;
-  margin-left: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
   display: inline-block;
+  height: 20px;
   cursor: pointer;
-  background-color: cyan;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  border-bottom: 2px solid cyan;
+  color: cyan;
 }
 nav li a {
+  color: cyan;
   text-decoration: none;
 }
 nav li:hover {
-  background-color: #d0e9e9;
+  color: #d0e9e9;
+  border-color: #d0e9e9;
 }
 
-.LoginWindow, .SignupWindow {
-  max-width: 750px;
+.LoginWindow, .SignupWindow, .ChangePassWindow {
+  max-width: 840px;
   margin: 0 auto;
+  margin-top: 50px;
   text-align: center;
-}
-.LoginWindow #welcome, .SignupWindow #welcome {
-  text-align: center;
-  font-size: 24px;
-  width: 300px;
-  margin: 0 auto;
-}
-
-.mainForm {
+  display: flex;
   height: 300px;
-  width: 350px;
-  margin: 0 auto;
-  padding-top: 150px;
-  font-size: 20px;
 }
-.mainForm h3 {
+.LoginWindow #welcome, .SignupWindow #welcome, .ChangePassWindow #welcome {
+  padding-top: 58px;
+  text-align: left;
+  font-size: 1.2em;
+  width: 450px;
+  margin: 0 auto;
+  margin-right: 15px;
+}
+.LoginWindow #welcome p:first-child, .SignupWindow #welcome p:first-child, .ChangePassWindow #welcome p:first-child {
+  margin-top: 0;
+}
+
+.mainForm, #changePassForm {
+  border-top: 2px solid darkcyan;
+  background-color: #d0e9e9;
+  width: 392px;
+  margin: 0 auto;
+  padding-top: 100px;
+  font-size: 0.95em;
+}
+.mainForm h3, #changePassForm h3 {
   text-align: center;
 }
-.mainForm label {
+.mainForm label, #changePassForm label {
   display: inline-block;
   width: 100px;
   margin-right: 10px;
   text-align: right;
-  font-size: 20px;
+  font-size: 1.2em;
 }
-.mainForm input[type=submit] {
-  margin-top: 20px;
+.mainForm input[type=submit], #changePassForm input[type=submit] {
   text-align: center;
-  width: 100%;
+  margin: 0 auto;
+  margin-top: 20px;
+  font-size: 1em;
   display: block;
+  width: 100px;
+  height: 50px;
+  font-weight: 500;
+  color: #5c5c5c;
+  text-decoration: underline;
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+}
+.mainForm input[type=submit]:hover, #changePassForm input[type=submit]:hover {
+  color: darkcyan;
+}
+.mainForm #error, #changePassForm #error {
+  margin-top: 10px;
+  color: #8f1d1d;
+  font-size: 14px;
 }
 
-#addForm, #removeForm {
+#changePassForm input[type=submit] {
+  width: 150px;
+}
+
+#addForm, #removeForm, #editGameForm {
   display: none;
 }
 
@@ -78,47 +115,87 @@ nav li:hover {
   margin: 0 auto;
   max-width: 1000px;
 }
+.App #searching {
+  text-align: center;
+  color: #5c5c5c;
+}
+.App .emptyGames {
+  text-align: center;
+  color: #5c5c5c;
+  font-weight: 300;
+}
 .App #searchForm {
+  text-align: center;
   margin-top: 10px;
+}
+.App #searchForm #searchTerm {
+  height: 30px;
+  width: 210px;
+  color: #5c5c5c;
+}
+.App #searchForm .searchSubmit {
+  color: #5c5c5c;
+  height: 30px;
+  margin-left: 5px;
+  background-color: cyan;
+  border: none;
+}
+.App #searchForm .searchSubmit:hover {
+  background-color: #d0e9e9;
+}
+
+#searchResults h3 {
+  margin: 0;
+  font-weight: 300;
+  padding: 10px;
+  background-color: #d0e9e9;
+  color: #5c5c5c;
 }
 
 .result {
-  background-color: #d0e9e9;
-  border: 1px solid #003e3e;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 15px 5px 15px 5px;
+  color: #5c5c5c;
+  display: flex;
+  height: 90px;
+  border: 1px solid #d0e9e9;
+  margin-bottom: 0;
 }
 .result #imgWrapper {
-  height: 120px;
-  width: 120px;
+  height: 90px;
+  width: 64px;
   overflow: hidden;
   display: inline-block;
 }
 .result #imgWrapper img {
-  width: 100%;
+  height: 100%;
   margin: 0 auto;
 }
 .result #resultInfo {
   display: inline-block;
   left: 50px;
   bottom: 10px;
-  position: relative;
+  margin-left: 10px;
 }
 .result #resultInfo p {
   margin-top: 0px;
-  font-size: 20px;
+  font-size: 1.1em;
+  font-weight: 300;
 }
 .result #resultInfo #resultName {
   margin-bottom: 10px;
 }
 .result #resultInfo #resultYear {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 0.9em;
+  margin: 0;
+}
+.result #resultInfo #resultPlatform {
+  display: inline;
 }
 .result #resultInfo select {
   font-size: 14px;
   margin-bottom: 10px;
   width: 200px;
+  color: #5c5c5c;
 }
 .result #resultInfo input {
   font-family: "Roboto", sans-serif;
@@ -127,47 +204,196 @@ nav li:hover {
   width: 200px;
   height: 50px;
   font-size: 18px;
+  left: 300px;
+  bottom: 26;
   border: none;
   display: inline-block;
   text-align: center;
   text-decoration: none;
   position: relative;
-  left: 200px;
-  top: 9px;
+  cursor: pointer;
+}
+.result #resultInfo input:hover {
+  background-color: #003e3e;
 }
 .result:last-child {
   margin-bottom: 150px;
 }
 
 #current, #owned, #finished, #hold, #dropped {
-  background-color: #d0e9e9;
-  border: 1px solid #003e3e;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  border: 2px solid #d0e9e9;
+  margin-bottom: 35px;
 }
-#current .gameNodeForm, #owned .gameNodeForm, #finished .gameNodeForm, #hold .gameNodeForm, #dropped .gameNodeForm {
+#current .game, #owned .game, #finished .game, #hold .game, #dropped .game {
+  height: 81px;
+  margin-bottom: 1px;
+  overflow: hidden;
+  border-top: 1px solid #d0e9e9;
+  border-left: 3px solid cyan;
+}
+#current .gameNodeForm, #current .gameNodeLog, #owned .gameNodeForm, #owned .gameNodeLog, #finished .gameNodeForm, #finished .gameNodeLog, #hold .gameNodeForm, #hold .gameNodeLog, #dropped .gameNodeForm, #dropped .gameNodeLog {
+  display: flex;
   background: lightcyan;
-  border: 3px solid cyan;
   padding: 5px;
+  margin: 0;
 }
-#current h3, #owned h3, #finished h3, #hold h3, #dropped h3 {
+#current .gameNodeForm #img, #current .gameNodeLog #img, #owned .gameNodeForm #img, #owned .gameNodeLog #img, #finished .gameNodeForm #img, #finished .gameNodeLog #img, #hold .gameNodeForm #img, #hold .gameNodeLog #img, #dropped .gameNodeForm #img, #dropped .gameNodeLog #img {
+  display: block;
+  width: 50px;
+  height: 70px;
+  overflow: hidden;
+}
+#current .gameNodeForm #img img, #current .gameNodeLog #img img, #owned .gameNodeForm #img img, #owned .gameNodeLog #img img, #finished .gameNodeForm #img img, #finished .gameNodeLog #img img, #hold .gameNodeForm #img img, #hold .gameNodeLog #img img, #dropped .gameNodeForm #img img, #dropped .gameNodeLog #img img {
+  height: 100%;
+}
+#current .gameNodeForm .gameNodeName, #current .gameNodeLog .gameNodeName, #owned .gameNodeForm .gameNodeName, #owned .gameNodeLog .gameNodeName, #finished .gameNodeForm .gameNodeName, #finished .gameNodeLog .gameNodeName, #hold .gameNodeForm .gameNodeName, #hold .gameNodeLog .gameNodeName, #dropped .gameNodeForm .gameNodeName, #dropped .gameNodeLog .gameNodeName {
+  font-size: 0.9em;
+  width: 61%;
+  position: relative;
+  top: 20px;
+  left: 20px;
+}
+#current .gameNodeForm .gameNodeYear, #current .gameNodeForm .gameNodePlayTime, #current .gameNodeLog .gameNodeYear, #current .gameNodeLog .gameNodePlayTime, #owned .gameNodeForm .gameNodeYear, #owned .gameNodeForm .gameNodePlayTime, #owned .gameNodeLog .gameNodeYear, #owned .gameNodeLog .gameNodePlayTime, #finished .gameNodeForm .gameNodeYear, #finished .gameNodeForm .gameNodePlayTime, #finished .gameNodeLog .gameNodeYear, #finished .gameNodeLog .gameNodePlayTime, #hold .gameNodeForm .gameNodeYear, #hold .gameNodeForm .gameNodePlayTime, #hold .gameNodeLog .gameNodeYear, #hold .gameNodeLog .gameNodePlayTime, #dropped .gameNodeForm .gameNodeYear, #dropped .gameNodeForm .gameNodePlayTime, #dropped .gameNodeLog .gameNodeYear, #dropped .gameNodeLog .gameNodePlayTime {
+  font-size: 0.8em;
+  width: 10%;
+  position: relative;
+  top: 24px;
+}
+#current .gameNodeForm .gameNodePlatform, #current .gameNodeForm .gameNodeDate, #current .gameNodeLog .gameNodePlatform, #current .gameNodeLog .gameNodeDate, #owned .gameNodeForm .gameNodePlatform, #owned .gameNodeForm .gameNodeDate, #owned .gameNodeLog .gameNodePlatform, #owned .gameNodeLog .gameNodeDate, #finished .gameNodeForm .gameNodePlatform, #finished .gameNodeForm .gameNodeDate, #finished .gameNodeLog .gameNodePlatform, #finished .gameNodeLog .gameNodeDate, #hold .gameNodeForm .gameNodePlatform, #hold .gameNodeForm .gameNodeDate, #hold .gameNodeLog .gameNodePlatform, #hold .gameNodeLog .gameNodeDate, #dropped .gameNodeForm .gameNodePlatform, #dropped .gameNodeForm .gameNodeDate, #dropped .gameNodeLog .gameNodePlatform, #dropped .gameNodeLog .gameNodeDate {
+  width: 13%;
+  font-size: 0.8em;
+  position: relative;
+  top: 24px;
+}
+#current .gameNodeForm p, #current .gameNodeLog p, #owned .gameNodeForm p, #owned .gameNodeLog p, #finished .gameNodeForm p, #finished .gameNodeLog p, #hold .gameNodeForm p, #hold .gameNodeLog p, #dropped .gameNodeForm p, #dropped .gameNodeLog p {
+  color: #5c5c5c;
   margin-top: 5px;
-  border-bottom: 1px solid #003e3e;
 }
-#current p, #owned p, #finished p, #hold p, #dropped p {
-  margin-top: 5px;
-}
-#current input, #owned input, #finished input, #hold input, #dropped input {
+#current .gameNodeForm input, #current .gameNodeLog input, #owned .gameNodeForm input, #owned .gameNodeLog input, #finished .gameNodeForm input, #finished .gameNodeLog input, #hold .gameNodeForm input, #hold .gameNodeLog input, #dropped .gameNodeForm input, #dropped .gameNodeLog input {
+  position: relative;
+  background-color: inherit;
+  top: 20px;
   font-family: "Roboto", sans-serif;
-  background-color: darkcyan;
-  color: white;
+  color: #5c5c5c;
   height: 30px;
   border: none;
-  font-size: 16px;
+  font-size: 0.8em;
   display: inline-block;
   text-align: center;
-  text-decoration: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+#current .currentLog, #owned .currentLog, #finished .currentLog, #hold .currentLog, #dropped .currentLog {
+  max-height: 267px;
+  overflow: scroll;
+}
+#current .currentLog .gameNodeLog, #owned .currentLog .gameNodeLog, #finished .currentLog .gameNodeLog, #hold .currentLog .gameNodeLog, #dropped .currentLog .gameNodeLog {
+  cursor: pointer;
+}
+#current .currentLog .gameNodeLog:hover, #owned .currentLog .gameNodeLog:hover, #finished .currentLog .gameNodeLog:hover, #hold .currentLog .gameNodeLog:hover, #dropped .currentLog .gameNodeLog:hover {
+  background-color: #d0e9e9;
+}
+#current .currentLog .gameNodeLog:active, #owned .currentLog .gameNodeLog:active, #finished .currentLog .gameNodeLog:active, #hold .currentLog .gameNodeLog:active, #dropped .currentLog .gameNodeLog:active {
+  background-color: cyan;
+}
+#current .currentLog .gameNodePlayTime, #owned .currentLog .gameNodePlayTime, #finished .currentLog .gameNodePlayTime, #hold .currentLog .gameNodePlayTime, #dropped .currentLog .gameNodePlayTime {
+  margin-right: 100px;
+}
+#current h3, #owned h3, #finished h3, #hold h3, #dropped h3 {
+  margin: 0;
+  font-weight: 300;
+  padding: 10px;
+  background-color: #d0e9e9;
+  color: #5c5c5c;
+}
+#current #noGames, #owned #noGames, #finished #noGames, #hold #noGames, #dropped #noGames {
+  padding: 10px;
+  margin: 0;
+  color: #5c5c5c;
+}
+#current .editForm, #owned .editForm, #finished .editForm, #hold .editForm, #dropped .editForm {
+  position: relative;
+  left: 74px;
+  top: 2px;
+  width: 66%;
+  border-top: 1px solid #d0e9e9;
+  padding-top: 6px;
+  display: inline-block;
+}
+#current .editForm label, #owned .editForm label, #finished .editForm label, #hold .editForm label, #dropped .editForm label {
+  font-size: 0.8em;
+  color: #5c5c5c;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+#current .editForm select, #owned .editForm select, #finished .editForm select, #hold .editForm select, #dropped .editForm select {
+  color: #5c5c5c;
+  height: 24px;
+}
+#current .editForm #lastPlayed, #owned .editForm #lastPlayed, #finished .editForm #lastPlayed, #hold .editForm #lastPlayed, #dropped .editForm #lastPlayed {
+  color: #5c5c5c;
+  height: 24px;
+}
+#current .editForm input[type=button], #current .editForm input[type=submit], #owned .editForm input[type=button], #owned .editForm input[type=submit], #finished .editForm input[type=button], #finished .editForm input[type=submit], #hold .editForm input[type=button], #hold .editForm input[type=submit], #dropped .editForm input[type=button], #dropped .editForm input[type=submit] {
+  color: #5c5c5c;
+  height: 24px;
+  margin-left: 5px;
+  background-color: cyan;
+  border: none;
+  cursor: pointer;
+}
+#current .editForm input[type=button]:hover, #current .editForm input[type=submit]:hover, #owned .editForm input[type=button]:hover, #owned .editForm input[type=submit]:hover, #finished .editForm input[type=button]:hover, #finished .editForm input[type=submit]:hover, #hold .editForm input[type=button]:hover, #hold .editForm input[type=submit]:hover, #dropped .editForm input[type=button]:hover, #dropped .editForm input[type=submit]:hover {
+  background-color: #d0e9e9;
+}
+
+#timeForm {
+  border: 4px solid cyan;
+  margin: 0 auto;
+  max-width: 800px;
+}
+#timeForm #startButton {
+  cursor: pointer;
+}
+#timeForm #time {
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  font-size: 5em;
+  margin-bottom: 40px;
+}
+#timeForm #controlButtons {
+  margin: 0 auto;
+  display: flex;
+  text-align: center;
+  max-width: 500px;
+}
+#timeForm #controlButtons button {
+  margin: 0 auto;
+  color: #5c5c5c;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.7em;
+  width: 150px;
+  height: 65px;
+  background-color: cyan;
+  border: 4px solid cyan;
+  border-bottom: 0;
+}
+#timeForm #controlButtons button:hover {
+  background-color: inherit;
+}
+#timeForm #stopButton {
+  cursor: pointer;
+  pointer-events: none;
+}
+#timeForm #saveButton {
+  cursor: pointer;
+}
+
+#selectedName {
+  background-color: cyan;
+  padding: 5px;
+  font-weight: 300;
+  margin: 0;
 }
 
 #current {
@@ -177,19 +403,29 @@ nav li:hover {
 #default {
   text-align: center;
 }
+#default h3 {
+  font-weight: 300;
+}
+#default .homeButtons {
+  margin-top: 50px;
+}
 #default .homeButtons div button {
-  font-family: "Roboto", sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: darkcyan;
-  color: white;
-  width: 210px;
-  height: 210px;
+  color: #d0e9e9;
+  width: 180px;
+  height: 180px;
   border: none;
-  font-size: 30px;
+  font-size: 2em;
   display: inline-block;
   position: relative;
   text-align: center;
   text-decoration: none;
   margin-left: 10px;
+  cursor: pointer;
+}
+#default .homeButtons div button:hover {
+  color: cyan;
 }
 #default .homeButtons div button a {
   color: white;
@@ -197,7 +433,28 @@ nav li:hover {
   cursor: pointer;
 }
 #default #changePassButton {
-  margin-top: 20px;
+  margin-top: 40px;
+  text-decoration: underline;
+  background-color: inherit;
+  color: #5c5c5c;
+  cursor: pointer;
+  border: none;
+}
+
+#errorNotFound {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+#errorNotFound h3 {
+  font-family: "Roboto", sans-serif;
+  font-size: 5em;
+  font-weight: 200 !important;
+}
+#errorNotFound h4 {
+  font-family: "Roboto", sans-serif;
+  font-size: 3em;
+  font-weight: 200 !important;
 }
 
 /*# sourceMappingURL=style.css.map */

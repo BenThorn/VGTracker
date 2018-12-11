@@ -91,6 +91,7 @@ and changes the submit button to add or delete*/
 var SearchResults = function SearchResults(props) {
   var submitValue = "Add Game";
   var submitMethod = handleSendGame;
+  var backgroundColor = void 0;
 
   // If search returns empty
   if (props.results.length === 0) {
@@ -104,14 +105,15 @@ var SearchResults = function SearchResults(props) {
       )
     );
   }
-
   var resultNodes = props.results.map(function (result) {
     for (var i = 0; i < props.userGames.length; i++) {
       if (props.userGames[i].gameId === result.id) {
         submitValue = "Delete Game";
         submitMethod = handleRemoveGame;
+        backgroundColor = { backgroundColor: 'cyan' };
         break;
       } else {
+        backgroundColor = { backgroundColor: 'inherit' };
         submitValue = "Add Game";
         submitMethod = handleSendGame;
       }
@@ -122,7 +124,8 @@ var SearchResults = function SearchResults(props) {
         key: result.id,
         onSubmit: submitMethod,
         name: result.name,
-        className: "result"
+        className: "result",
+        style: backgroundColor
       },
       React.createElement(
         "div",
@@ -176,6 +179,7 @@ var SearchResults = function SearchResults(props) {
         ),
         React.createElement("input", { id: "resultGameId", type: "hidden", name: "resultGameId", value: result.id }),
         React.createElement("input", { id: "resultYearVal", type: "hidden", name: "resultYearVal", value: formatDate(result.original_release_date, result.expected_release_year, true) }),
+        React.createElement("input", { id: "resultPicVal", type: "hidden", name: "resultPicVal", value: result.image['small_url'] }),
         React.createElement("input", { id: "resultSubmit", type: "submit", value: submitValue })
       )
     );
@@ -186,6 +190,11 @@ var SearchResults = function SearchResults(props) {
     "div",
     { className: "resultList",
       "data-results": JSON.stringify(props.results) },
+    React.createElement(
+      "h3",
+      null,
+      "Search Results"
+    ),
     resultNodes
   );
 };
@@ -203,6 +212,72 @@ var formatDate = function formatDate(date, futureDate, needsNum) {
   } else if (!date && !futureDate && needsNum) {
     return 0;
   }
+};
+"use strict";
+
+/* Form for adding a game to the collection from the search screen.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
+var AddForm = function AddForm(props) {
+  return React.createElement(
+    "form",
+    { id: "addForm",
+      onSubmit: handleAdd,
+      name: "addForm",
+      action: "/addPage",
+      method: "POST",
+      className: "addForm"
+    },
+    React.createElement("input", { id: "gameName", type: "text", name: "name", placeholder: "Game Name", value: "" }),
+    React.createElement("input", { id: "gameYear", type: "text", name: "year", placeholder: "Game Year", value: "" }),
+    React.createElement("input", { id: "gameId", type: "text", name: "gameId", value: "" }),
+    React.createElement("input", { id: "gamePlatform", type: "text", name: "platform", value: "" }),
+    React.createElement("input", { id: "gameCategory", type: "text", name: "category", value: "" }),
+    React.createElement("input", { id: "gamePicUrl", type: "text", name: "picUrl", value: "" }),
+    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+    React.createElement("input", { className: "addGameSubmit", type: "submit", value: "Add Game" })
+  );
+};
+
+/* Form for removing a game to the collection from the search or list screens.
+Display is hidden from the CSS, so the user will not see it.
+I did this so I could create it at setup with the csrf token */
+var RemoveForm = function RemoveForm(props) {
+  return React.createElement(
+    "form",
+    { id: "removeForm",
+      onSubmit: handleRemove,
+      name: "removeForm",
+      action: "/remove",
+      method: "DELETE",
+      className: "removeForm"
+    },
+    React.createElement("input", { id: "gameIdRemove", type: "text", name: "gameId", value: "" }),
+    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+    React.createElement("input", { className: "removeGameSubmit", type: "submit", value: "Remove Game" })
+  );
+};
+
+/* Form for sending the options to update an existing game to the api.
+  Hidden using CSS, so the user won't see it.
+*/
+var EditGameForm = function EditGameForm(props) {
+  return React.createElement(
+    "form",
+    { id: "editGameForm",
+      onSubmit: handleEdit,
+      name: "editForm",
+      action: "/edit",
+      method: "POST",
+      className: "editGameForm"
+    },
+    React.createElement("input", { id: "gameIdEdit", type: "text", name: "gameId", value: "" }),
+    React.createElement("input", { id: "categoryEdit", type: "text", name: "category", value: "" }),
+    React.createElement("input", { id: "lastPlayedEdit", type: "text", name: "lastPlayed", value: "" }),
+    React.createElement("input", { id: "playTimeEdit", type: "text", name: "playTime", value: "" }),
+    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+    React.createElement("input", { className: "editGameSubmit", type: "submit", value: "Edit Game" })
+  );
 };
 
 // Adds options to the form's dropdown menu for platforms
@@ -240,49 +315,6 @@ var populateDropdown = function populateDropdown(platforms) {
 };
 "use strict";
 
-/* Form for adding a game to the collection from the search screen.
-Display is hidden from the CSS, so the user will not see it.
-I did this so I could create it at setup with the csrf token */
-var AddForm = function AddForm(props) {
-  return React.createElement(
-    "form",
-    { id: "addForm",
-      onSubmit: handleAdd,
-      name: "addForm",
-      action: "/addPage",
-      method: "POST",
-      className: "addForm"
-    },
-    React.createElement("input", { id: "gameName", type: "text", name: "name", placeholder: "Game Name", value: "" }),
-    React.createElement("input", { id: "gameYear", type: "text", name: "year", placeholder: "Game Year", value: "" }),
-    React.createElement("input", { id: "gameId", type: "text", name: "gameId", value: "" }),
-    React.createElement("input", { id: "gamePlatform", type: "text", name: "platform", value: "" }),
-    React.createElement("input", { id: "gameCategory", type: "text", name: "category", value: "" }),
-    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-    React.createElement("input", { className: "addGameSubmit", type: "submit", value: "Add Game" })
-  );
-};
-
-/* Form for removing a game to the collection from the search or list screens.
-Display is hidden from the CSS, so the user will not see it.
-I did this so I could create it at setup with the csrf token */
-var RemoveForm = function RemoveForm(props) {
-  return React.createElement(
-    "form",
-    { id: "removeForm",
-      onSubmit: handleRemove,
-      name: "removeForm",
-      action: "/remove",
-      method: "DELETE",
-      className: "removeForm"
-    },
-    React.createElement("input", { id: "gameIdRemove", type: "text", name: "gameId", value: "" }),
-    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-    React.createElement("input", { className: "removeGameSubmit", type: "submit", value: "Remove Game" })
-  );
-};
-"use strict";
-
 // Sends game info to the API to be sent to the database
 var handleAdd = function handleAdd(e) {
   e.preventDefault();
@@ -301,8 +333,8 @@ var handleAdd = function handleAdd(e) {
 // Sends game ID to the API for it to be removed from the database
 var handleRemove = function handleRemove(e, page) {
   e.preventDefault();
-
   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function () {
+
     // Differentiate between removing from the search page or the list page
     if (page === 'result') {
       loadSearchResults($(".resultList").data('results'));
@@ -314,16 +346,36 @@ var handleRemove = function handleRemove(e, page) {
   return false;
 };
 
+// Sends game ID and options to be changed or added to the API
+var handleEdit = function handleEdit(e) {
+  e.preventDefault();
+  sendAjax('POST', $("#editGameForm").attr("action"), $("#editGameForm").serialize(), function () {
+    console.log('success');
+    loadGamesFromServer();
+  });
+
+  return false;
+};
+
+// Similar to edit, but specifically for sending update time parameters
+var handleUpdateTime = function handleUpdateTime() {
+  sendAjax('POST', $("#editGameForm").attr("action"), $("#editGameForm").serialize(), function () {
+    console.log('success');
+    loadGamesFromServer();
+  });
+
+  return false;
+};
+
 // Sends search info to the API, to be called by the external API
 var handleSearch = function handleSearch(e) {
   e.preventDefault();
 
-  if ($("#searchTerm").val() === '') {
-    handleError("Please fill in a search term.");
-    return false;
-  }
-
-  $("#searchResults").text("Searching...");
+  var searching = document.createElement('p');
+  $(searching).text('Searching...');
+  searching.id = 'searching';
+  $("#searchResults").empty();
+  $("#searchResults").append(searching);
 
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
     loadSearchResults(data);
@@ -341,6 +393,7 @@ var handleSendGame = function handleSendGame(e) {
   $("#gameId").val(form.resultGameId.value.toString());
   $("#gamePlatform").val(form.resultPlatforms.value);
   $("#gameCategory").val(form.resultCategory.value);
+  $("#gamePicUrl").val(form.resultPicVal.value);
 
   handleAdd(e);
 };
@@ -350,14 +403,36 @@ var handleRemoveGame = function handleRemoveGame(e) {
   e.preventDefault();
 
   var form = e.target;
-
-  if (form.className === 'gameNodeForm') {
+  if (!form.className) {
+    form = e.target.parentNode; // Workaround for nesting of elements
     $("#gameIdRemove").val(form.gameId.value.toString());
   } else if (form.className === 'result') {
+    form = e.target;
     $("#gameIdRemove").val(form.resultGameId.value.toString());
   }
 
   handleRemove(e, form.className);
+};
+
+// Sets up the hidden form with the parameters to update the game with
+var handleEditGame = function handleEditGame(e) {
+  e.preventDefault();
+  var form = e.target;
+  $("#gameIdEdit").val(form.gameId.value.toString());
+  $("#categoryEdit").val(form.resultCategory.value.toString());
+  $("#lastPlayedEdit").val(form.lastPlayed.value.toString());
+
+  handleEdit(e);
+};
+
+// Sets up the hidden form with the parameters to update the game with
+var handleSendTime = function handleSendTime(options) {
+  $("#gameIdEdit").val(options.gameId);
+  $("#lastPlayedEdit").val(options.lastPlayed);
+  $("#playTimeEdit").val(options.playTime);
+  $("#categoryEdit").val(options.category);
+
+  handleUpdateTime();
 };
 
 // Called when sending the user's credentials and new password to the API
@@ -379,16 +454,35 @@ var handleChangePassword = function handleChangePassword(e) {
 
   return false;
 };
-"use strict";
+'use strict';
 
 // A simple browser alert when an error occurs
 var handleError = function handleError(message) {
-  alert(message);
+  $("#error").text(message);
 };
 
 // Redirects the window to the designated url
 var redirect = function redirect(response) {
   window.location = response.redirect;
+};
+
+// Taken from https://hype.codes/how-get-current-date-javascript
+var getDate = function getDate() {
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1;
+  var yyyy = today.getFullYear();
+
+  if (dd < 10) {
+    dd = '0' + dd;
+  }
+
+  if (mm < 10) {
+    mm = '0' + mm;
+  }
+
+  var date = yyyy + '-' + mm + '-' + dd;
+  return date;
 };
 
 // Sends ajax request
@@ -403,17 +497,6 @@ var sendAjax = function sendAjax(type, action, data, success) {
     error: function error(xhr, status, _error) {
       var messageObj = JSON.parse(xhr.responseText);
       handleError(messageObj.error);
-    }
-  });
-};
-'use strict';
-
-var loadGamesFromServer = function loadGamesFromServer() {
-  sendAjax('GET', '/getGames', null, function (data) {
-    var categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
-
-    for (var i = 0; i < categories.length; i++) {
-      ReactDOM.render(React.createElement(GameList, { games: data.games, currentCategory: categories[i] }), document.querySelector('.' + categories[i] + 'List'));
     }
   });
 };

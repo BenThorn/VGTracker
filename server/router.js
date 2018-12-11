@@ -17,6 +17,10 @@ const router = (app) => {
   app.get('/list', mid.requiresLogin, controllers.Game.listPage);
   app.get('/log', mid.requiresLogin, controllers.Game.logPage);
   app.post('/changePassword', mid.requiresLogin, controllers.Account.changePassword);
+  app.post('/edit', mid.requiresLogin, controllers.Game.updateGame);
+  app.get('*', (req, res) => {
+    res.render('error', { csrfToken: req.csrfToken() });
+  });
 };
 
 module.exports = router;

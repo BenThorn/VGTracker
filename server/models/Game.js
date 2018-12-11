@@ -40,10 +40,29 @@ const GameSchema = new mongoose.Schema({
     set: trimStr,
   },
 
+  picUrl: {
+    type: String,
+    required: true,
+    trim: true,
+    set: trimStr,
+  },
+
   owner: {
     type: mongoose.Schema.ObjectId,
     required: true,
     ref: 'Account',
+  },
+
+  lastPlayed: {
+    type: Date,
+    required: false,
+    default: null,
+  },
+
+  playTime: {
+    type: Number,
+    required: false,
+    default: null,
   },
 
   createdData: {
@@ -63,7 +82,8 @@ GameSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return GameModel.find(search).select('name year gameId platform category').exec(callback);
+  const selection = 'name year gameId platform category lastPlayed picUrl playTime';
+  return GameModel.find(search).select(selection).exec(callback);
 };
 
 // Deletes a single of a user's games based on the ID
@@ -74,6 +94,30 @@ GameSchema.statics.deleteByName = (ownerId, gameId, callback) => {
   };
 
   return GameModel.deleteOne(gameToRemove).exec(callback);
+};
+
+// Updates a game with the specified parameters
+GameSchema.statics.updateByName = (ownerId, gameId, params, callback) => {
+  const gameToUpdate = {
+    owner: ownerId,
+    gameId,
+  };
+
+  const updateParams = {
+    $set: {
+      category: params.category,
+    },
+  };
+
+  if (params.lastPlayed) {
+    updateParams.$set.lastPlayed = params.lastPlayed;
+  }
+
+  if (params.playTime) {
+    updateParams.$set.playTime = params.playTime;
+  }
+
+  return GameModel.updateOne(gameToUpdate, updateParams, callback);
 };
 
 GameModel = mongoose.model('Game', GameSchema);

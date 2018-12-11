@@ -9,6 +9,7 @@ class App extends React.Component {
     return(
       <div className='App'>
         <RemoveForm csrf={this.props.csrf} />
+        <EditGameForm csrf={this.props.csrf} />
         <div id="current">
           <h3>Currently playing</h3>
           <div className="currentList">
@@ -46,24 +47,18 @@ class App extends React.Component {
 
 // The list of the user's games
 const GameList = function(props) {
-  if(props.games.length === 0) {
-    return (
-      <div className="gameList">
-      </div>
-    );
-  }
-
   const gameNodes = props.games.map(function(game) {
-    const node = createGameNode(game, props.currentCategory);
-    if(node !== null) {
-      return node;
-    }
+    const node = createGameNode(game);
+    // Sends the game node's edit form category select
+    const categorySelect = node.props.children[1].props.children[1].props.children;
+    const lastPlayedField = node.props.children[1].props.children[4];
+    setEditOptions(categorySelect, lastPlayedField, game.category, game.lastPlayed);
+    return node;
   });
-
-  if (gameNodes[0] === null) {
+  if (gameNodes.length === 0) {
     return (
       <div className="gameList">
-        <p>Currently no games in this category.</p>
+        <p id="noGames">Currently no games in this category.</p>
       </div>
     )
   } else {
@@ -73,8 +68,6 @@ const GameList = function(props) {
       </div>
     );
   }
-
-
 };
 
 // Page setup
@@ -90,44 +83,94 @@ const setup = function(csrf) {
 const loadGamesFromServer = () => {
   sendAjax('GET', '/getGames', null, (data) => {
     const categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
+    const games = data.games;
 
     for(let i = 0; i < categories.length; i++) {
+      let separatedGames = []; // Only sending an array with the pre-separated list
+      games.forEach((game) => {
+        if(game.category === categories[i]) {
+          separatedGames.push(game);
+        }
+      });
       ReactDOM.render(
-        <GameList games={data.games} currentCategory={categories[i]} />, document.querySelector(`.${categories[i]}List`)
+        <GameList games={separatedGames} currentCategory={categories[i]} />, document.querySelector(`.${categories[i]}List`)
       )
     }
   })
 };
 
-const createGameNode = (game, currentCategory) => {
-  // To separate the user's games into the five categories, it only returns an element if the category matches 
-  // the current category
-  if (game.category === currentCategory) {
-    let year;
-    // Check if the date wasn't available from the API
-    if(game.year === 0) {
-      year = 'N/A';
-    } else {
-      year = game.year;
-    }
-    return (
-      <div key={game._id} className="game">
-        <form
-          id={game._id}
-          className='gameNodeForm'
-          onSubmit={handleRemoveGame}
-          action="removeList"
-        >
-          <p className="gameNodeName"> {game.name} </p>
-          <p className="gameNodeYear"> {year} </p>
-          <p className="gameNodePlatform"> {game.platform} </p>
-          <input type='hidden' id='gameId' value={game.gameId} />
-          <input type='submit' value='Remove Game From Collection' />
-        </form>
-      </div>
-    );
+// Creates a single game listing in your collection
+const createGameNode = (game) => {
+  let year;
+  // Check if the date wasn't available from the API
+  if(game.year === 0) {
+    year = 'N/A';
   } else {
-    return null
+    year = game.year;
+  }
+  return (
+    <div key={game._id} id={game._id} className="game">
+      <form
+        className='gameNodeForm'
+        onSubmit={handleRemoveGame}
+        action="removeList"
+      >
+        <div id='img'>
+          <img src={game.picUrl} alt="game picture" />
+        </div>
+        <p className="gameNodeName"> {game.name} </p>
+        <p className="gameNodeYear"> {year} </p>
+        <p className="gameNodePlatform"> {game.platform} </p>
+        <input id="editButton" type='button' value='Edit' onClick={editClick}/>
+        <input type='hidden' id='gameId' value={game.gameId} />
+        <input type='button' value='Delete' onClick={handleRemoveGame}/>
+      </form>
+      <form 
+      className="editForm"
+      onSubmit={handleEditGame}
+      >
+        <label for="category" >Category: </label>
+        <select id="resultCategory">
+          <option value="current">Currently playing</option>
+          <option value="owned">Owned, but not played</option>
+          <option value="finished">Finished</option>
+          <option value="hold">On hold</option>
+          <option value="dropped">Dropped</option>
+        </select>
+        <label for="date">Last played:</label>
+        <input type='hidden' id='gameId' value={game.gameId} />
+        <input type="date" id="lastPlayed" name="lastPlayed"
+          min="1970-01-01" max={getDate()} />
+        <input id="editSubmit" type="submit" value="Save"/>
+        <input id="editCancel" type="button" onClick={cancelClick} value="Cancel" />
+      </form>
+    </div>
+  );
+};
+
+// For opening the edit menu
+const editClick = (e) => {
+  const gameWrapper = e.target.parentNode.parentNode;
+
+  $(".game").animate({height: "82px"}, {queue: false});
+  $(gameWrapper).animate({height: "120px"}, {queue: false});
+};
+
+const cancelClick = (e) => {
+  const gameWrapper = e.target.parentNode.parentNode;
+  $(gameWrapper).animate({height: "82px"}, {queue: false});
+};
+
+// Sets the initial selected option of the category select and last played date
+const setEditOptions = (options, lastPlayedField, category, lastPlayed) =>{
+  options.forEach((option) => {
+    if(category === option.props.value) {
+      option.props.selected = true;
+    }
+  });
+
+  if(lastPlayed) {
+    lastPlayedField.props.value = lastPlayed.slice(0, 10);
   }
 };
 

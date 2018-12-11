@@ -16,8 +16,8 @@ const handleAdd = (e) => {
 // Sends game ID to the API for it to be removed from the database
 const handleRemove = (e, page) => {
   e.preventDefault();
-
   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function() {
+
     // Differentiate between removing from the search page or the list page
     if (page === 'result') {
       loadSearchResults($(".resultList").data('results'));
@@ -29,16 +29,36 @@ const handleRemove = (e, page) => {
   return false;
 };
 
+// Sends game ID and options to be changed or added to the API
+const handleEdit = (e) => {
+  e.preventDefault();
+  sendAjax('POST', $("#editGameForm").attr("action"), $("#editGameForm").serialize(), function () {
+    console.log('success');
+    loadGamesFromServer();
+  });
+
+  return false;
+};
+
+// Similar to edit, but specifically for sending update time parameters
+const handleUpdateTime = () => {
+  sendAjax('POST', $("#editGameForm").attr("action"), $("#editGameForm").serialize(), function () {
+    console.log('success');
+    loadGamesFromServer();
+  });
+
+  return false
+};
+
 // Sends search info to the API, to be called by the external API
 const handleSearch = (e) => {
   e.preventDefault();
 
-  if($("#searchTerm").val() === ''){
-    handleError("Please fill in a search term.");
-    return false;
-  }
-
-  $("#searchResults").text("Searching...");
+  const searching = document.createElement('p');
+  $(searching).text('Searching...');
+  searching.id = 'searching';
+  $("#searchResults").empty();
+  $("#searchResults").append(searching);
 
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), (data) => {
     loadSearchResults(data);
@@ -57,6 +77,7 @@ const handleSendGame = (e) => {
   $("#gameId").val(form.resultGameId.value.toString());
   $("#gamePlatform").val(form.resultPlatforms.value);
   $("#gameCategory").val(form.resultCategory.value);
+  $("#gamePicUrl").val(form.resultPicVal.value);
 
   handleAdd(e);
 };
@@ -65,15 +86,38 @@ const handleSendGame = (e) => {
 const handleRemoveGame = (e) => {
   e.preventDefault();
 
-  const form = e.target;
-
-  if(form.className === 'gameNodeForm') {
+  let form = e.target;
+  if(!form.className) {
+    form = e.target.parentNode; // Workaround for nesting of elements
     $("#gameIdRemove").val(form.gameId.value.toString());
   } else if(form.className === 'result') {
+    form = e.target;
     $("#gameIdRemove").val(form.resultGameId.value.toString());
   }
 
   handleRemove(e, form.className);
+};
+
+// Sets up the hidden form with the parameters to update the game with
+const handleEditGame = (e) => {
+  e.preventDefault();
+  const form = e.target;
+  $("#gameIdEdit").val(form.gameId.value.toString());
+  $("#categoryEdit").val(form.resultCategory.value.toString());
+  $("#lastPlayedEdit").val(form.lastPlayed.value.toString());
+
+  handleEdit(e);
+};
+
+// Sets up the hidden form with the parameters to update the game with
+const handleSendTime = (options) => {
+  $("#gameIdEdit").val(options.gameId);
+  $("#lastPlayedEdit").val(options.lastPlayed);
+  $("#playTimeEdit").val(options.playTime);
+  $("#categoryEdit").val(options.category);
+
+
+  handleUpdateTime();
 };
 
 // Called when sending the user's credentials and new password to the API

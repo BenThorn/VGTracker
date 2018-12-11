@@ -28,6 +28,7 @@ var App = function (_React$Component) {
         "div",
         { className: "App" },
         React.createElement(RemoveForm, { csrf: this.props.csrf }),
+        React.createElement(EditGameForm, { csrf: this.props.csrf }),
         React.createElement(
           "div",
           { id: "current" },
@@ -97,24 +98,21 @@ var App = function (_React$Component) {
 
 // The list of the user's games
 var GameList = function GameList(props) {
-  if (props.games.length === 0) {
-    return React.createElement("div", { className: "gameList" });
-  }
-
   var gameNodes = props.games.map(function (game) {
-    var node = createGameNode(game, props.currentCategory);
-    if (node !== null) {
-      return node;
-    }
+    var node = createGameNode(game);
+    // Sends the game node's edit form category select
+    var categorySelect = node.props.children[1].props.children[1].props.children;
+    var lastPlayedField = node.props.children[1].props.children[4];
+    setEditOptions(categorySelect, lastPlayedField, game.category, game.lastPlayed);
+    return node;
   });
-
-  if (gameNodes[0] === null) {
+  if (gameNodes.length === 0) {
     return React.createElement(
       "div",
       { className: "gameList" },
       React.createElement(
         "p",
-        null,
+        { id: "noGames" },
         "Currently no games in this category."
       )
     );
@@ -138,62 +136,150 @@ var setup = function setup(csrf) {
 var loadGamesFromServer = function loadGamesFromServer() {
   sendAjax('GET', '/getGames', null, function (data) {
     var categories = ['current', 'owned', 'finished', 'hold', 'dropped'];
+    var games = data.games;
+
+    var _loop = function _loop(i) {
+      var separatedGames = []; // Only sending an array with the pre-separated list
+      games.forEach(function (game) {
+        if (game.category === categories[i]) {
+          separatedGames.push(game);
+        }
+      });
+      ReactDOM.render(React.createElement(GameList, { games: separatedGames, currentCategory: categories[i] }), document.querySelector("." + categories[i] + "List"));
+    };
 
     for (var i = 0; i < categories.length; i++) {
-      ReactDOM.render(React.createElement(GameList, { games: data.games, currentCategory: categories[i] }), document.querySelector("." + categories[i] + "List"));
+      _loop(i);
     }
   });
 };
 
-var createGameNode = function createGameNode(game, currentCategory) {
-  // To separate the user's games into the five categories, it only returns an element if the category matches 
-  // the current category
-  if (game.category === currentCategory) {
-    var year = void 0;
-    // Check if the date wasn't available from the API
-    if (game.year === 0) {
-      year = 'N/A';
-    } else {
-      year = game.year;
-    }
-    return React.createElement(
-      "div",
-      { key: game._id, className: "game" },
-      React.createElement(
-        "form",
-        {
-          id: game._id,
-          className: "gameNodeForm",
-          onSubmit: handleRemoveGame,
-          action: "removeList"
-        },
-        React.createElement(
-          "p",
-          { className: "gameNodeName" },
-          " ",
-          game.name,
-          " "
-        ),
-        React.createElement(
-          "p",
-          { className: "gameNodeYear" },
-          " ",
-          year,
-          " "
-        ),
-        React.createElement(
-          "p",
-          { className: "gameNodePlatform" },
-          " ",
-          game.platform,
-          " "
-        ),
-        React.createElement("input", { type: "hidden", id: "gameId", value: game.gameId }),
-        React.createElement("input", { type: "submit", value: "Remove Game From Collection" })
-      )
-    );
+// Creates a single game listing in your collection
+var createGameNode = function createGameNode(game) {
+  var year = void 0;
+  // Check if the date wasn't available from the API
+  if (game.year === 0) {
+    year = 'N/A';
   } else {
-    return null;
+    year = game.year;
+  }
+  return React.createElement(
+    "div",
+    { key: game._id, id: game._id, className: "game" },
+    React.createElement(
+      "form",
+      {
+        className: "gameNodeForm",
+        onSubmit: handleRemoveGame,
+        action: "removeList"
+      },
+      React.createElement(
+        "div",
+        { id: "img" },
+        React.createElement("img", { src: game.picUrl, alt: "game picture" })
+      ),
+      React.createElement(
+        "p",
+        { className: "gameNodeName" },
+        " ",
+        game.name,
+        " "
+      ),
+      React.createElement(
+        "p",
+        { className: "gameNodeYear" },
+        " ",
+        year,
+        " "
+      ),
+      React.createElement(
+        "p",
+        { className: "gameNodePlatform" },
+        " ",
+        game.platform,
+        " "
+      ),
+      React.createElement("input", { id: "editButton", type: "button", value: "Edit", onClick: editClick }),
+      React.createElement("input", { type: "hidden", id: "gameId", value: game.gameId }),
+      React.createElement("input", { type: "button", value: "Delete", onClick: handleRemoveGame })
+    ),
+    React.createElement(
+      "form",
+      {
+        className: "editForm",
+        onSubmit: handleEditGame
+      },
+      React.createElement(
+        "label",
+        { "for": "category" },
+        "Category: "
+      ),
+      React.createElement(
+        "select",
+        { id: "resultCategory" },
+        React.createElement(
+          "option",
+          { value: "current" },
+          "Currently playing"
+        ),
+        React.createElement(
+          "option",
+          { value: "owned" },
+          "Owned, but not played"
+        ),
+        React.createElement(
+          "option",
+          { value: "finished" },
+          "Finished"
+        ),
+        React.createElement(
+          "option",
+          { value: "hold" },
+          "On hold"
+        ),
+        React.createElement(
+          "option",
+          { value: "dropped" },
+          "Dropped"
+        )
+      ),
+      React.createElement(
+        "label",
+        { "for": "date" },
+        "Last played:"
+      ),
+      React.createElement("input", { type: "hidden", id: "gameId", value: game.gameId }),
+      React.createElement("input", { type: "date", id: "lastPlayed", name: "lastPlayed",
+        min: "1970-01-01", max: getDate() }),
+      React.createElement("input", { id: "editSubmit", type: "submit", value: "Save" }),
+      React.createElement("input", { id: "editCancel", type: "button", onClick: cancelClick, value: "Cancel" })
+    )
+  );
+};
+
+// For opening the edit menu
+var editClick = function editClick(e) {
+  var gameWrapper = e.target.parentNode.parentNode;
+
+  $(".game").animate({ height: "82px" }, { queue: false });
+  $(gameWrapper).animate({ height: "120px" }, { queue: false });
+};
+
+var cancelClick = function cancelClick(e) {
+  var gameWrapper = e.target.parentNode.parentNode;
+  $(gameWrapper).animate({ height: "82px" }, { queue: false });
+};
+
+// Sets the initial selected option of the category select and last played date
+var setEditOptions = function setEditOptions(options, lastPlayedField, category, lastPlayed) {
+  options.forEach(function (option) {
+    if (category === option.props.value) {
+      option.props.selected = true;
+    }
+  });
+
+  if (lastPlayed) {
+    lastPlayedField.props.value = lastPlayed.slice(0, 10);
   }
 };
 
@@ -228,6 +314,7 @@ var AddForm = function AddForm(props) {
     React.createElement("input", { id: "gameId", type: "text", name: "gameId", value: "" }),
     React.createElement("input", { id: "gamePlatform", type: "text", name: "platform", value: "" }),
     React.createElement("input", { id: "gameCategory", type: "text", name: "category", value: "" }),
+    React.createElement("input", { id: "gamePicUrl", type: "text", name: "picUrl", value: "" }),
     React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
     React.createElement("input", { className: "addGameSubmit", type: "submit", value: "Add Game" })
   );
@@ -251,6 +338,62 @@ var RemoveForm = function RemoveForm(props) {
     React.createElement("input", { className: "removeGameSubmit", type: "submit", value: "Remove Game" })
   );
 };
+
+/* Form for sending the options to update an existing game to the api.
+  Hidden using CSS, so the user won't see it.
+*/
+var EditGameForm = function EditGameForm(props) {
+  return React.createElement(
+    "form",
+    { id: "editGameForm",
+      onSubmit: handleEdit,
+      name: "editForm",
+      action: "/edit",
+      method: "POST",
+      className: "editGameForm"
+    },
+    React.createElement("input", { id: "gameIdEdit", type: "text", name: "gameId", value: "" }),
+    React.createElement("input", { id: "categoryEdit", type: "text", name: "category", value: "" }),
+    React.createElement("input", { id: "lastPlayedEdit", type: "text", name: "lastPlayed", value: "" }),
+    React.createElement("input", { id: "playTimeEdit", type: "text", name: "playTime", value: "" }),
+    React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
+    React.createElement("input", { className: "editGameSubmit", type: "submit", value: "Edit Game" })
+  );
+};
+
+// Adds options to the form's dropdown menu for platforms
+var populateDropdown = function populateDropdown(platforms) {
+  // Some games, for some reason, have no platform listed, so we need to check for that.
+  if (platforms) {
+    var options = [];
+
+    for (var i = 0; i < platforms.length; i++) {
+      options.push(React.createElement(
+        "option",
+        { value: platforms[i].name },
+        platforms[i].name
+      ));
+    }
+
+    var dropDown = React.createElement(
+      "select",
+      { id: "resultPlatforms" },
+      options
+    );
+
+    return dropDown;
+  } else {
+    return React.createElement(
+      "select",
+      { id: "resultPlatforms" },
+      React.createElement(
+        "option",
+        { value: "N/A" },
+        "No system listed"
+      )
+    );
+  }
+};
 "use strict";
 
 // Sends game info to the API to be sent to the database
@@ -271,8 +414,8 @@ var handleAdd = function handleAdd(e) {
 // Sends game ID to the API for it to be removed from the database
 var handleRemove = function handleRemove(e, page) {
   e.preventDefault();
-
   sendAjax('DELETE', $("#removeForm").attr("action"), $("#removeForm").serialize(), function () {
+
     // Differentiate between removing from the search page or the list page
     if (page === 'result') {
       loadSearchResults($(".resultList").data('results'));
@@ -284,16 +427,36 @@ var handleRemove = function handleRemove(e, page) {
   return false;
 };
 
+// Sends game ID and options to be changed or added to the API
+var handleEdit = function handleEdit(e) {
+  e.preventDefault();
+  sendAjax('POST', $("#editGameForm").attr("action"), $("#editGameForm").serialize(), function () {
+    console.log('success');
+    loadGamesFromServer();
+  });
+
+  return false;
+};
+
+// Similar to edit, but specifically for sending update time parameters
+var handleUpdateTime = function handleUpdateTime() {
+  sendAjax('POST', $("#editGameForm").attr("action"), $("#editGameForm").serialize(), function () {
+    console.log('success');
+    loadGamesFromServer();
+  });
+
+  return false;
+};
+
 // Sends search info to the API, to be called by the external API
 var handleSearch = function handleSearch(e) {
   e.preventDefault();
 
-  if ($("#searchTerm").val() === '') {
-    handleError("Please fill in a search term.");
-    return false;
-  }
-
-  $("#searchResults").text("Searching...");
+  var searching = document.createElement('p');
+  $(searching).text('Searching...');
+  searching.id = 'searching';
+  $("#searchResults").empty();
+  $("#searchResults").append(searching);
 
   sendAjax('GET', $("#searchForm").attr("action"), $("#searchTerm").val(), function (data) {
     loadSearchResults(data);
@@ -311,6 +474,7 @@ var handleSendGame = function handleSendGame(e) {
   $("#gameId").val(form.resultGameId.value.toString());
   $("#gamePlatform").val(form.resultPlatforms.value);
   $("#gameCategory").val(form.resultCategory.value);
+  $("#gamePicUrl").val(form.resultPicVal.value);
 
   handleAdd(e);
 };
@@ -320,14 +484,36 @@ var handleRemoveGame = function handleRemoveGame(e) {
   e.preventDefault();
 
   var form = e.target;
-
-  if (form.className === 'gameNodeForm') {
+  if (!form.className) {
+    form = e.target.parentNode; // Workaround for nesting of elements
     $("#gameIdRemove").val(form.gameId.value.toString());
   } else if (form.className === 'result') {
+    form = e.target;
     $("#gameIdRemove").val(form.resultGameId.value.toString());
   }
 
   handleRemove(e, form.className);
+};
+
+// Sets up the hidden form with the parameters to update the game with
+var handleEditGame = function handleEditGame(e) {
+  e.preventDefault();
+  var form = e.target;
+  $("#gameIdEdit").val(form.gameId.value.toString());
+  $("#categoryEdit").val(form.resultCategory.value.toString());
+  $("#lastPlayedEdit").val(form.lastPlayed.value.toString());
+
+  handleEdit(e);
+};
+
+// Sets up the hidden form with the parameters to update the game with
+var handleSendTime = function handleSendTime(options) {
+  $("#gameIdEdit").val(options.gameId);
+  $("#lastPlayedEdit").val(options.lastPlayed);
+  $("#playTimeEdit").val(options.playTime);
+  $("#categoryEdit").val(options.category);
+
+  handleUpdateTime();
 };
 
 // Called when sending the user's credentials and new password to the API
@@ -349,16 +535,35 @@ var handleChangePassword = function handleChangePassword(e) {
 
   return false;
 };
-"use strict";
+'use strict';
 
 // A simple browser alert when an error occurs
 var handleError = function handleError(message) {
-  alert(message);
+  $("#error").text(message);
 };
 
 // Redirects the window to the designated url
 var redirect = function redirect(response) {
   window.location = response.redirect;
+};
+
+// Taken from https://hype.codes/how-get-current-date-javascript
+var getDate = function getDate() {
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1;
+  var yyyy = today.getFullYear();
+
+  if (dd < 10) {
+    dd = '0' + dd;
+  }
+
+  if (mm < 10) {
+    mm = '0' + mm;
+  }
+
+  var date = yyyy + '-' + mm + '-' + dd;
+  return date;
 };
 
 // Sends ajax request
