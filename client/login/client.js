@@ -46,10 +46,14 @@ const LoginWindow = (props) => {
       method="POST"
       className="mainForm"
     >
-      <label htmlFor="username">Username: </label>
-      <input id="user" type="text" name="username" placeholder="username"/>
-      <label htmlFor="pass">Password: </label>
-      <input id="pass" type="password" name="pass" placeholder="password"/>
+      <div>
+        <label htmlFor="username">Username: </label>
+        <input id="user" type="text" name="username" placeholder="username"/>
+      </div>
+      <div>
+        <label htmlFor="pass">Password: </label>
+        <input id="pass" type="password" name="pass" placeholder="password"/>
+      </div>
       <div id="error"></div>
       <input type="hidden" name="_csrf" value={props.csrf}/>
       <input className="formSubmit" type="submit" value="Sign in" />
@@ -69,12 +73,18 @@ const SignupWindow = (props) => {
       method="POST"
       className="mainForm"
     >
-      <label htmlFor="username">Username: </label>
-      <input id="user" type="text" name="username" placeholder="username"/>
-      <label htmlFor="pass">Password: </label>
-      <input id="pass" type="password" name="pass" placeholder="password"/>
-      <label htmlFor="pass2">Password: </label>
-      <input id="pass2" type="password" name="pass2" placeholder="retype password"/>
+      <div>
+        <label htmlFor="username">Username: </label>
+        <input id="user" type="text" name="username" placeholder="username"/>
+      </div>
+      <div>
+        <label htmlFor="pass">Password: </label>
+        <input id="pass" type="password" name="pass" placeholder="password"/>
+      </div>
+      <div>
+        <label htmlFor="pass2">Password: </label>
+        <input id="pass2" type="password" name="pass2" placeholder="retype password"/>
+      </div>
       <input type="hidden" name="_csrf" value={props.csrf}/>
       <div id="error"></div>
       <input className="formSubmit" type="submit" value="Sign up" />

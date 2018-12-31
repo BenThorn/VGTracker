@@ -39,12 +39,18 @@ const ChangePassWindow = (props) => {
       method="POST"
       className="mainForm"
     >
-      <label htmlFor="username">Username: </label>
-      <input id="user" type="text" name="username"/>
-      <label htmlFor="pass"> Old: </label>
-      <input id="oldPass" type="password" name="oldPass" />
-      <label htmlFor="pass2"> New: </label>
-      <input id="newPass" type="password" name="newPass" />
+      <div>
+        <label htmlFor="username">Username: </label>
+        <input id="user" type="text" name="username"/>
+      </div>
+      <div>
+        <label htmlFor="pass"> Old: </label>
+        <input id="oldPass" type="password" name="oldPass" />
+      </div>
+      <div>
+        <label htmlFor="pass2"> New: </label>
+        <input id="newPass" type="password" name="newPass" />
+      </div>
       <input type="hidden" name="_csrf" value={props.csrf}/>
       <div id="error"></div>
       <input className="formSubmit" type="submit" value="Change password" />

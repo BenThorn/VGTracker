@@ -97,23 +97,35 @@ var ChangePassWindow = function ChangePassWindow(props) {
         className: "mainForm"
       },
       React.createElement(
-        "label",
-        { htmlFor: "username" },
-        "Username: "
+        "div",
+        null,
+        React.createElement(
+          "label",
+          { htmlFor: "username" },
+          "Username: "
+        ),
+        React.createElement("input", { id: "user", type: "text", name: "username" })
       ),
-      React.createElement("input", { id: "user", type: "text", name: "username" }),
       React.createElement(
-        "label",
-        { htmlFor: "pass" },
-        " Old: "
+        "div",
+        null,
+        React.createElement(
+          "label",
+          { htmlFor: "pass" },
+          " Old: "
+        ),
+        React.createElement("input", { id: "oldPass", type: "password", name: "oldPass" })
       ),
-      React.createElement("input", { id: "oldPass", type: "password", name: "oldPass" }),
       React.createElement(
-        "label",
-        { htmlFor: "pass2" },
-        " New: "
+        "div",
+        null,
+        React.createElement(
+          "label",
+          { htmlFor: "pass2" },
+          " New: "
+        ),
+        React.createElement("input", { id: "newPass", type: "password", name: "newPass" })
       ),
-      React.createElement("input", { id: "newPass", type: "password", name: "newPass" }),
       React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
       React.createElement("div", { id: "error" }),
       React.createElement("input", { className: "formSubmit", type: "submit", value: "Change password" })
