@@ -7,8 +7,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const expressHandlebars = require('express-handlebars');
 const session = require('express-session');
-const redis = require('redis');
-let RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis')(session);
 const url = require('url');
 const csrf = require('csurf');
 
@@ -33,19 +32,8 @@ let redisPASS;
 
 if (process.env.REDISCLOUD_URL) {
   redisURL = url.parse(process.env.REDISCLOUD_URL);
-  console.log(redisURL);
   redisPASS = redisURL.auth.split(':')[1];
-} else {
-  console.log('Error in the redis url')
 }
-
-let redisClient = redis.createClient({
-  host: redisURL.hostname,
-  port: redisURL.port,
-  pass: redisPASS
-})
-redisClient.unref()
-redisClient.on('error', console.log)
 
 const router = require('./router.js');
 
@@ -60,7 +48,9 @@ app.use(bodyParser.urlencoded({
 app.use(session({
   key: 'sessionid',
   store: new RedisStore({
-    client: redisClient
+    host: redisURL.hostname,
+    port: redisURL.port,
+    pass: redisPASS,
   }),
   secret: 'Himitsu dayo',
   resave: true,
