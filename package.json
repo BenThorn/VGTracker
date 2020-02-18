@@ -2,8 +2,8 @@
   "name": "VGTracker",
   "version": "1.0.0",
   "engines": {
-    "node": "12.11.0",
-    "npm": "4.0.5"
+    "node": "10.16.3",
+    "npm": "6.9.0"
   },
   "description": "A Simple Login Example using Node.js, Mongo and Redis",
   "main": "./server/app.js",
