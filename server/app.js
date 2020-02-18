@@ -33,7 +33,10 @@ let redisPASS;
 
 if (process.env.REDISCLOUD_URL) {
   redisURL = url.parse(process.env.REDISCLOUD_URL);
+  console.log(redisURL);
   redisPASS = redisURL.auth.split(':')[1];
+} else {
+  console.log('Error in the redis url')
 }
 
 let redisClient = redis.createClient({
