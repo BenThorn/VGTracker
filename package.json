@@ -1,8 +1,8 @@
 {
-  "name": "Logins",
+  "name": "VGTracker",
   "version": "1.0.0",
   "engines": {
-    "node": "7.5.0",
+    "node": "12.11.0",
     "npm": "4.0.5"
   },
   "description": "A Simple Login Example using Node.js, Mongo and Redis",
@@ -29,7 +29,7 @@
     "Redis",
     "Login"
   ],
-  "author": "Cody Van De Mark",
+  "author": "Ben Thorn",
   "license": "Apache 2.0",
   "dependencies": {
     "body-parser": "^1.19.0",
