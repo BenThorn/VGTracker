@@ -13,7 +13,7 @@ const csrf = require('csurf');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/GameLog';
+const dbURL = process.env.DB_URI || 'mongodb://localhost/GameLog';
 
 // Connect to database
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true}, (err) => {
